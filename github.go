@@ -18,6 +18,10 @@ func (g *GitHub) SetupRequest(req *http.Request) {
 	req.Header.Set("X-GitHub-Api-Version", "2026-03-10")
 }
 
+type User struct {
+	Name string `json:"login"`
+}
+
 type PullRequest struct {
 	Number int `json:"number"`
 	Title string `json:"title"`
@@ -28,7 +32,11 @@ type PullRequest struct {
 	ClosedAt *time.Time `json:"closed_at"`
 	MergedAt *time.Time `json:"merged_at"`
 	IsDraft bool `json:"draft"`
+	Author User `json:"user"`
+	Assignees []User `json:"assignees"`
+	Reviewers []User `json:"requested_reviewers"`
 }
+
 
 func (g *GitHub) GetPullRequestsJson(owner, repo string) ([]byte, error) {
 	url := fmt.Sprintf("https://api.github.com/repos/%s/%s/pulls", owner, repo)
