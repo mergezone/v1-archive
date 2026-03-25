@@ -21,10 +21,13 @@ func (g *GitHub) SetupRequest(req *http.Request) {
 type PullRequest struct {
 	Number int `json:"number"`
 	Title string `json:"title"`
+	Body string `json:"body"`
+	URL string `json:"html_url"`
 	CreatedAt *time.Time `json:"created_at"`
 	UpdatedAt *time.Time `json:"updated_at"`
 	ClosedAt *time.Time `json:"closed_at"`
 	MergedAt *time.Time `json:"merged_at"`
+	IsDraft bool `json:"draft"`
 }
 
 func (g *GitHub) GetPullRequestsJson(owner, repo string) ([]byte, error) {

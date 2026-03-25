@@ -16,7 +16,7 @@ type Server struct {
 	GitHub GitHub
 }
 
-func (s *Server) HandleOwnerRepoJson(w http.ResponseWriter, r *http.Request) {
+func (s *Server) HandleOwnerRepoRawJson(w http.ResponseWriter, r *http.Request) {
 	s.Logger.Info(fmt.Sprintf("Handling request for %s", r.URL.Path))
 
 	vars := mux.Vars(r)
@@ -34,7 +34,7 @@ func (s *Server) HandleOwnerRepoJson(w http.ResponseWriter, r *http.Request) {
 	w.Write(json)
 }
 
-func (s *Server) HandleOwnerRepo(w http.ResponseWriter, r *http.Request) {
+func (s *Server) HandleOwnerRepoJson(w http.ResponseWriter, r *http.Request) {
 	s.Logger.Info(fmt.Sprintf("Handling request for %s", r.URL.Path))
 
 	vars := mux.Vars(r)
@@ -59,9 +59,15 @@ func (s *Server) HandleOwnerRepo(w http.ResponseWriter, r *http.Request) {
 	w.Write(json)
 }
 
+func (s *Server) HandleOwnerRepoPage(w http.ResponseWriter, r *http.Request) {
+	// TODO(hayden): Implement page generation
+	s.HandleOwnerRepoJson(w, r)
+}
+
 func (s *Server) Start() error {
-	s.Router.HandleFunc("/{owner}/{repo}", s.HandleOwnerRepo)
+	s.Router.HandleFunc("/{owner}/{repo}", s.HandleOwnerRepoPage)
 	s.Router.HandleFunc("/{owner}/{repo}/json", s.HandleOwnerRepoJson)
+	s.Router.HandleFunc("/{owner}/{repo}/raw", s.HandleOwnerRepoRawJson)
 	s.Logger.Info(fmt.Sprintf("Server starting on port %d", s.Port))
 	return http.ListenAndServe(fmt.Sprintf(":%d", s.Port), s.Router)
 }
