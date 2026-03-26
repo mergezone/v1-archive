@@ -37,6 +37,26 @@ type PullRequest struct {
 	Reviewers []User `json:"requested_reviewers"`
 }
 
+func (pr *PullRequest) TimeOpen() time.Duration {
+	created := pr.CreatedAt != nil
+	if !created {
+		// How?
+		return 0
+	}
+
+	delta := time.Now().Sub(*pr.CreatedAt)
+	if delta < 0 {
+		// Time traveller?
+		return 0
+	}
+
+	return delta
+}
+
+func (pr *PullRequest) DaysOpen() int {
+	hrs := pr.TimeOpen().Hours()
+	return int(hrs / 24)
+}
 
 func (g *GitHub) GetPullRequestsJson(owner, repo string) ([]byte, error) {
 	url := fmt.Sprintf("https://api.github.com/repos/%s/%s/pulls", owner, repo)
