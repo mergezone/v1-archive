@@ -723,6 +723,7 @@ document.addEventListener("alpine:init", () => {
       this._owner = this._owner || "";
       this._repository = this._repository || "";
 
+      console.debug("[context-pane] openPane", pullRequestNumber, "bodyHtmlLength", (seed.bodyHtml || "").length, "titleHtmlLength", (seed.titleHtml || "").length);
       this.bodyHtml = seed.bodyHtml || "";
       this.loadingBody = false;
       this._seedDiscussion(this.pullRequestNumber);
