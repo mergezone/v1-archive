@@ -18,4 +18,9 @@ templ RepositoryMainView(viewData model.RepositoryViewData, commit string) {
 	@components.RepositoryFilterPanel()
 	@components.ContextPane()
 	@components.MobileDock(true, filters)
+	if viewData.SharedPullRequest != nil {
+		<div hidden id="shared-pull-request" aria-hidden="true">
+			@components.PullRequestCard(*viewData.SharedPullRequest, filters)
+		</div>
+	}
 }

@@ -94,7 +94,7 @@ func BaseDocument(title, description, baseURL, owner, repository, scope string) 
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "\"></head><body class=\"repository-page h-dvh overflow-hidden bg-base-200 text-base-content\" x-data x-init=\"$store.app.init()\"><div class=\"page-shell box-border flex h-full min-h-0 w-full flex-col gap-6 pb-[calc(4rem+env(safe-area-inset-bottom))] compact:max-lg:gap-3 lg:flex-row lg:gap-0 lg:pb-0\" id=\"page-shell\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "\"></head><body class=\"h-dvh overflow-hidden bg-base-200 text-base-content\" x-data x-init=\"$store.app.init()\"><div class=\"page-shell box-border flex h-full min-h-0 w-full flex-col gap-6 pb-[calc(4rem+env(safe-area-inset-bottom))] compact:max-lg:gap-3 lg:flex-row lg:gap-0 lg:pb-0\" id=\"page-shell\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

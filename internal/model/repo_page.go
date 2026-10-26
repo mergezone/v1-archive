@@ -178,7 +178,8 @@ type RepositoryViewData struct {
 	ScopeSort         string
 	ContributorCounts []ContributorInfo
 	ContributorSort   string
-	CurrentPage       int
-	HasMore           bool
-	PullRequest       int
+	CurrentPage         int
+	HasMore             bool
+	PullRequest         int
+	SharedPullRequest   *StampedPullRequest
 }

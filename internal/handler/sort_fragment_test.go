@@ -24,6 +24,10 @@ func (p *pagedStubProvider) GetPullRequests(_ context.Context, _ provider.Reposi
 	return p.pages[options.Page], provider.PullRequestPagination{HasNext: options.Page < 2}, provider.PullRequestTimings{Gather: time.Millisecond}, nil
 }
 
+func (p *pagedStubProvider) GetPullRequest(context.Context, string, string, int) (model.StampedPullRequest, error) {
+	return model.StampedPullRequest{}, nil
+}
+
 func (p *pagedStubProvider) GetPullRequestDiff(context.Context, string, string, int) (string, error) {
 	return "", nil
 }

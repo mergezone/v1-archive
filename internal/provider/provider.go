@@ -99,6 +99,7 @@ type Provider interface {
 	// selections, so callers pick the pull requests they want with
 	// FilterPullRequests once the unfiltered set is available.
 	GetPullRequests(ctx context.Context, query RepositoryQuery, options PullRequestListOptions) ([]model.StampedPullRequest, PullRequestPagination, PullRequestTimings, error)
+	GetPullRequest(ctx context.Context, owner, repository string, pullRequestNumber int) (model.StampedPullRequest, error)
 	GetPullRequestDiff(ctx context.Context, owner, repository string, pullRequestNumber int) (string, error)
 	GetPullRequestComments(ctx context.Context, owner, repository string, pullRequestNumber int) ([]model.PullRequestComment, error)
 }

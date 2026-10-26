@@ -258,6 +258,25 @@ func HandleRepository(request *RepositoryRequest, w http.ResponseWriter, r *http
 
 	scopeSummaries, contributorSummaries := sidebarSummaries(allPullRequests, filters.ScopeSort, filters.ContributorSort)
 
+	var sharedPullRequest *model.StampedPullRequest
+	if filters.PullRequest > 0 {
+		found := false
+		for _, pullRequest := range allPullRequests {
+			if pullRequest.Number == filters.PullRequest {
+				found = true
+				break
+			}
+		}
+		if !found {
+			fetched, err := request.Provider.GetPullRequest(r.Context(), request.Query.Owner, request.Query.Repository, filters.PullRequest)
+			if err == nil {
+				sharedPullRequest = &fetched
+			} else {
+				request.Logger.Warn("could not load shared pull request", "error", err)
+			}
+		}
+	}
+
 	viewData := model.RepositoryViewData{
 		BaseURL:           request.BaseURL,
 		Owner:             request.Query.Owner,
@@ -271,9 +290,10 @@ func HandleRepository(request *RepositoryRequest, w http.ResponseWriter, r *http
 		ScopeSort:         filters.ScopeSort,
 		ContributorCounts: contributorSummaries,
 		ContributorSort:   filters.ContributorSort,
-		CurrentPage:       1,
-		HasMore:           pagination.HasNext,
-		PullRequest:       filters.PullRequest,
+		CurrentPage:         1,
+		HasMore:             pagination.HasNext,
+		PullRequest:         filters.PullRequest,
+		SharedPullRequest:   sharedPullRequest,
 	}
 	logicSpan.SetAttributes(attribute.Int("repository.scope_count", len(viewData.ScopeCounts)))
 	logicSpan.End()
