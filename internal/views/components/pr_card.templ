@@ -28,15 +28,9 @@ templ PullRequestCard(pullRequest model.StampedPullRequest, filters model.Reposi
 		}
 		scopeJSON, _ := json.Marshal(scopeItems)
 		paneSeed := map[string]any{
-			"number":          pullRequest.Number,
-			"owner":           filters.Owner,
-			"repository":      filters.Repository,
-			"title":           pullRequest.Title,
-			"titleHtml":       helpers.RenderMarkdownInline(pullRequest.Title),
-			"state":           pullRequest.State,
-			"statusClass":     helpers.GetStatusClass(pullRequest),
-			"expiryStatus":    helpers.ExpiryLabel(pullRequest),
-			"expiryIconClass": helpers.StatusIconClass(pullRequest),
+			"owner":      filters.Owner,
+			"repository": filters.Repository,
+			"titleHtml":  helpers.RenderMarkdownInline(pullRequest.Title),
 			"supersededBy": func() any {
 				if pullRequest.SupersededBy == nil {
 					return nil
@@ -47,17 +41,7 @@ templ PullRequestCard(pullRequest model.StampedPullRequest, filters model.Reposi
 					"reason": helpers.SupersessionReason(pullRequest),
 				}
 			}(),
-			"expiryReason":    helpers.ExpiryReason(pullRequest),
-			"url":             pullRequest.URL,
-			"comments":        pullRequest.CommentCount(),
-			"reviewerCount":   len(pullRequest.Reviewers),
-			"age":             model.TimeAgoLong(pullRequest.TimeOpen, pullRequest.DaysOpen),
-			"authorName":      pullRequest.Author.Name,
-			"authorURL":       pullRequest.Author.URL,
-			"authorAvatarURL": pullRequest.Author.AvatarURL,
-			"scopes":          scopeItems,
-			"bodyHtml":        helpers.RenderMarkdown(pullRequest.Body),
-			"refs":            helpers.PullRequestReferences(pullRequest.Body),
+			"bodyHtml": helpers.RenderMarkdown(pullRequest.Body),
 		}
 	}}
 	<div

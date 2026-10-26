@@ -42,9 +42,6 @@ func TestPullRequestCardSeedsRequestedReviewerCount(t *testing.T) {
 	}
 	output := renderSortFragmentURLs(t, PullRequestCard(pullRequest, model.RepositoryFilters{}))
 
-	if !strings.Contains(output, `"reviewerCount":2`) {
-		t.Error("pull request seed should include the requested reviewer count")
-	}
 	if !strings.Contains(output, `data-pull-request-reviewer-count="2"`) {
 		t.Error("pull request dataset should include the requested reviewer count")
 	}

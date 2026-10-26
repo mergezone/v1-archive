@@ -152,6 +152,7 @@ func HandleRepository(request *RepositoryRequest, w http.ResponseWriter, r *http
 	// Response contract: `fragment` selects a named repository fragment and takes
 	// precedence; otherwise HX-Request=true returns the repository main view, while
 	// direct navigation returns the complete HTML document.
+	pullRequestNumber, _ := strconv.Atoi(r.URL.Query().Get("pr"))
 	filters := model.RepositoryFilters{
 		Owner:           request.Query.Owner,
 		Repository:      request.Query.Repository,
@@ -160,6 +161,7 @@ func HandleRepository(request *RepositoryRequest, w http.ResponseWriter, r *http
 		Status:          request.Query.Status,
 		ScopeSort:       model.NormalizeSortOrder(request.Query.ScopeSort),
 		ContributorSort: model.NormalizeSortOrder(request.Query.ContributorSort),
+		PullRequest:     pullRequestNumber,
 	}
 
 	// Load-more requests return the requested page of pull requests and updated aggregate summaries.
@@ -271,6 +273,7 @@ func HandleRepository(request *RepositoryRequest, w http.ResponseWriter, r *http
 		ContributorSort:   filters.ContributorSort,
 		CurrentPage:       1,
 		HasMore:           pagination.HasNext,
+		PullRequest:       filters.PullRequest,
 	}
 	logicSpan.SetAttributes(attribute.Int("repository.scope_count", len(viewData.ScopeCounts)))
 	logicSpan.End()

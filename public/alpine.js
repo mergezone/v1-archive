@@ -643,37 +643,40 @@ document.addEventListener("alpine:init", () => {
         console.warn("[context-pane] invalid pull request seed", error);
       }
 
-      this.pullRequestNumber = seed.number || pullRequestNumber;
+      this.pullRequestNumber =
+        Number(dataset.pullRequestNumber) || pullRequestNumber;
       this.pullRequestTitle =
-        seed.title || dataset.pullRequestTitle || "Pull Request";
-      this.pullRequestTitleHtml = seed.titleHtml || this.pullRequestTitle;
+        dataset.pullRequestTitle || seed.title || "Pull Request";
+      this.pullRequestTitleHtml =
+        seed.titleHtml || dataset.pullRequestTitle || this.pullRequestTitle;
       this.pullRequestStatusClass =
-        seed.statusClass || dataset.pullRequestStatusClass || "";
-      this.pullRequestURL = seed.url || dataset.pullRequestURL || "#";
-      this.pullRequestState = seed.state || dataset.pullRequestState || "";
+        dataset.pullRequestStatusClass || seed.statusClass || "";
+      this.pullRequestURL = dataset.pullRequestURL || seed.url || "#";
+      this.pullRequestState = dataset.pullRequestState || seed.state || "";
       this.pullRequestExpiryStatus =
-        seed.expiryStatus || dataset.pullRequestExpiryStatus || "";
+        dataset.pullRequestExpiryStatus || seed.expiryStatus || "";
       this.pullRequestExpiryIconClass =
-        seed.expiryIconClass || dataset.pullRequestExpiryIconClass || "";
+        dataset.pullRequestExpiryIconClass || seed.expiryIconClass || "";
       this.pullRequestExpiryReason =
-        seed.expiryReason || dataset.pullRequestExpiryReason || "";
+        dataset.pullRequestExpiryReason || seed.expiryReason || "";
       this.pullRequestSupersededBy = this._supersession(
         seed.supersededBy,
         dataset,
       );
       this.pullRequestComments = String(
-        seed.comments ?? dataset.pullRequestComments ?? "0",
+        dataset.pullRequestComments ?? seed.comments ?? "0",
       );
       this.pullRequestReviewerCount = Number(
-        seed.reviewerCount ?? dataset.pullRequestReviewerCount ?? 0,
+        dataset.pullRequestReviewerCount ?? seed.reviewerCount ?? 0,
       );
-      this.pullRequestAge = seed.age || dataset.pullRequestAge || "";
+      this.pullRequestAge =
+        dataset.pullRequestAge || seed.age || "";
       this.pullRequestAuthorName =
-        seed.authorName || dataset.pullRequestAuthorName || "";
+        dataset.pullRequestAuthorName || seed.authorName || "";
       this.pullRequestAuthorURL =
-        seed.authorURL || dataset.pullRequestAuthorURL || "#";
+        dataset.pullRequestAuthorURL || seed.authorURL || "#";
       this.pullRequestAuthorAvatarURL =
-        seed.authorAvatarURL || dataset.pullRequestAuthorAvatarUrl || "";
+        dataset.pullRequestAuthorAvatarUrl || seed.authorAvatarURL || "";
       this.pullRequestScopes = this._scopes(seed.scopes, dataset);
       this._seedByPullRequest.set(pullRequestNumber, seed);
 
@@ -695,8 +698,8 @@ document.addEventListener("alpine:init", () => {
         this._owner = owner;
         this._repository = repository;
       }
-      this._owner = seed.owner || this._owner;
-      this._repository = seed.repository || this._repository;
+      this._owner = this._owner || seed.owner || "";
+      this._repository = this._repository || seed.repository || "";
 
       this.bodyHtml = seed.bodyHtml || "";
       this.loadingBody = false;
@@ -845,14 +848,15 @@ document.addEventListener("alpine:init", () => {
     },
 
     _scopes(seedScopes, dataset = {}) {
-      let scopes = seedScopes;
+      // The plural data-* payload is canonical; the JSON seed is only a fallback.
+      let scopes = [];
+      try {
+        scopes = JSON.parse(dataset.pullRequestScopes || "[]");
+      } catch {
+        scopes = [];
+      }
       if (!Array.isArray(scopes) || scopes.length === 0) {
-        // The plural dataset is canonical when a card has no usable JSON seed.
-        try {
-          scopes = JSON.parse(dataset.pullRequestScopes || "[]");
-        } catch {
-          scopes = [];
-        }
+        scopes = seedScopes;
       }
       if (Array.isArray(scopes) && scopes.length) {
         return scopes

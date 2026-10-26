@@ -17,8 +17,8 @@ Remaining audit remediation items from the consistency-first design audit.
 
 ## Priority 3 — Data flow
 
-- [ ] **L3** Flip context pane to `data-*`-first population, drop JSON seed where redundant
-- [ ] **U1** Add `?pr=` to HTMX push-url so shared PR survives filter navigation
+- [x] **L3** Flip context pane to `data-*`-first population, drop JSON seed where redundant
+- [x] **U1** Add `?pr=` to HTMX push-url so shared PR survives filter navigation
 
 ## Priority 4 — CSS rework (major effort, incremental)
 

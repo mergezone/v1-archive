@@ -33,6 +33,7 @@ type RepositoryFilters struct {
 	Status          []string
 	ScopeSort       string
 	ContributorSort string
+	PullRequest     int
 }
 
 func (f RepositoryFilters) URL() string {
@@ -110,6 +111,9 @@ func (f RepositoryFilters) queryValues() url.Values {
 	if f.ContributorSort == SortTop {
 		q.Set("contributor_sort", f.ContributorSort)
 	}
+	if f.PullRequest > 0 {
+		q.Set("pr", strconv.Itoa(f.PullRequest))
+	}
 	return q
 }
 
@@ -176,4 +180,5 @@ type RepositoryViewData struct {
 	ContributorSort   string
 	CurrentPage       int
 	HasMore           bool
+	PullRequest       int
 }
