@@ -18,7 +18,7 @@ func TestContextPaneClosesWhenTappingOutsideOnMobile(t *testing.T) {
 		"@click.away=",
 		"window.innerWidth < 1024",
 		"$store.contextPane.closePane()",
-		"closest('.pull-request')",
+		"closest('.pull-request-card')",
 		"closest('.filter-panel')",
 		"closest('.mobile-dock')",
 	} {

@@ -648,7 +648,7 @@ document.addEventListener("alpine:init", () => {
       if (!seed.titleHtml && !seed.bodyHtml) {
         try {
           const card = document.querySelector(
-            `.pull-request[data-pull-request-number="${pullRequestNumber}"]`,
+            `.pull-request-card[data-pull-request-number="${pullRequestNumber}"]`,
           );
           seed = {
             titleHtml:
@@ -705,7 +705,7 @@ document.addEventListener("alpine:init", () => {
       this._owner = "";
       this._repository = "";
       const card = document.querySelector(
-        `.pull-request[data-pull-request-number="${pullRequestNumber}"]`,
+        `.pull-request-card[data-pull-request-number="${pullRequestNumber}"]`,
       );
       const owner = card?.closest("[data-owner]")?.dataset.owner;
       const repository = card?.closest("[data-repository]")?.dataset.repository;
@@ -723,8 +723,6 @@ document.addEventListener("alpine:init", () => {
       this._owner = this._owner || "";
       this._repository = this._repository || "";
 
-      const debugCard = document.querySelector(`.pull-request[data-pull-request-number="${pullRequestNumber}"]`);
-      console.debug("[context-pane] openPane", pullRequestNumber, "cardFound", !!debugCard, "bodyHtmlLength", (seed.bodyHtml || "").length, "titleHtmlLength", (seed.titleHtml || "").length, "domBodyLength", (debugCard?.querySelector(".pull-request-body-html")?.innerHTML || "").length);
       this.bodyHtml = seed.bodyHtml || "";
       this.loadingBody = false;
       this._seedDiscussion(this.pullRequestNumber);
@@ -734,7 +732,7 @@ document.addEventListener("alpine:init", () => {
       this.open = true;
 
       const selected = document.querySelector(
-        '.pull-request[data-selected="true"]',
+        '.pull-request-card[data-selected="true"]',
       );
       if (selected) selected.dataset.selected = "false";
       if (card) card.dataset.selected = "true";
@@ -771,7 +769,7 @@ document.addEventListener("alpine:init", () => {
       if (isNaN(pullRequestNumber)) return;
 
       const card = document.querySelector(
-        `.pull-request[data-pull-request-number="${pullRequestNumber}"]`,
+        `.pull-request-card[data-pull-request-number="${pullRequestNumber}"]`,
       );
       if (card) {
         this.openPane(pullRequestNumber, card.dataset);
@@ -953,7 +951,7 @@ document.addEventListener("alpine:init", () => {
       }
 
       const selected = document.querySelector(
-        '.pull-request[data-selected="true"]',
+        '.pull-request-card[data-selected="true"]',
       );
       if (selected) selected.dataset.selected = "false";
     },
