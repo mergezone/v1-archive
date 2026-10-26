@@ -698,8 +698,8 @@ document.addEventListener("alpine:init", () => {
         this._owner = owner;
         this._repository = repository;
       }
-      this._owner = this._owner || seed.owner || "";
-      this._repository = this._repository || seed.repository || "";
+      this._owner = this._owner || "";
+      this._repository = this._repository || "";
 
       this.bodyHtml = seed.bodyHtml || "";
       this.loadingBody = false;

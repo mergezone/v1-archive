@@ -28,20 +28,8 @@ templ PullRequestCard(pullRequest model.StampedPullRequest, filters model.Reposi
 		}
 		scopeJSON, _ := json.Marshal(scopeItems)
 		paneSeed := map[string]any{
-			"owner":      filters.Owner,
-			"repository": filters.Repository,
-			"titleHtml":  helpers.RenderMarkdownInline(pullRequest.Title),
-			"supersededBy": func() any {
-				if pullRequest.SupersededBy == nil {
-					return nil
-				}
-				return map[string]any{
-					"number": pullRequest.SupersededBy.Number,
-					"url":    pullRequest.SupersededBy.URL,
-					"reason": helpers.SupersessionReason(pullRequest),
-				}
-			}(),
-			"bodyHtml": helpers.RenderMarkdown(pullRequest.Body),
+			"titleHtml": helpers.RenderMarkdownInline(pullRequest.Title),
+			"bodyHtml":  helpers.RenderMarkdown(pullRequest.Body),
 		}
 	}}
 	<div
