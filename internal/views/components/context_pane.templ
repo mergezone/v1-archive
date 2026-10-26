@@ -85,68 +85,15 @@ templ ContextPane() {
 					</table>
 				</div>
 				<section class="context-pane-section context-pane-card" x-data="{ collapsed: true }" x-show="$store.contextPane.open">
-					<div
-						class="context-pane-section-heading group/section flex cursor-pointer items-center justify-between gap-2 px-3 py-2 transition-colors hover:bg-base-200 focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-primary compact:px-2 compact:py-1"
-						role="button"
-						tabindex="0"
-						:aria-expanded="!$data.collapsed"
-						:aria-label="$data.collapsed ? 'Expand discussion' : 'Collapse discussion'"
-						@click="if (!$event.target.closest('button,a')) { $data.collapsed = !$data.collapsed; if (!$data.collapsed) $store.contextPane.loadDiscussion() }"
-						@keydown.enter.prevent="$data.collapsed = !$data.collapsed; if (!$data.collapsed) $store.contextPane.loadDiscussion()"
-						@keydown.space.prevent="$data.collapsed = !$data.collapsed; if (!$data.collapsed) $store.contextPane.loadDiscussion()"
-						:class="!$data.collapsed && 'border-b border-base-300'"
-					>
-						<span class="section-heading-label font-heading flex min-w-0 items-center gap-2 text-sm font-bold">
-							<span class="section-heading-control relative inline-flex h-8 w-6 flex-none items-center justify-center compact:h-6">
-								<i class="fa-solid fa-comments section-heading-icon text-base-content/60 transition-opacity group-hover/section:opacity-0 group-focus-within/section:opacity-0 pointer-coarse:opacity-0" aria-hidden="true"></i>
-								<button
-									class="link-button collapse-section-button absolute inset-y-0 left-0 inline-flex w-6 items-center justify-center rounded-md border-0 bg-transparent text-xs leading-none text-base-content/60 opacity-0 pointer-events-none transition-opacity hover:bg-base-content/10 hover:text-base-content focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary group-hover/section:pointer-events-auto group-hover/section:opacity-100 group-focus-within/section:pointer-events-auto group-focus-within/section:opacity-100 pointer-coarse:pointer-events-auto pointer-coarse:opacity-100"
-									type="button"
-									:aria-expanded="!$data.collapsed"
-									:aria-label="$data.collapsed ? 'Expand discussion' : 'Collapse discussion'"
-									:title="$data.collapsed ? 'Expand discussion' : 'Collapse discussion'"
-									@click.stop="$data.collapsed = !$data.collapsed; if (!$data.collapsed) $store.contextPane.loadDiscussion()"
-								>
-									<i class="fa-solid" :class="$data.collapsed ? 'fa-chevron-down' : 'fa-chevron-up'" aria-hidden="true"></i>
-								</button>
-							</span>
-							<span>Discussion</span>
-							<span class="context-pane-discussion-count badge badge-sm badge-ghost px-1.5 text-sm leading-none font-bold" x-text="$store.contextPane.pullRequestComments"></span>
-						</span>
-					</div>
+					@CollapsibleSectionHeading("Discussion", "fa-comments", "$store.contextPane.loadDiscussion()") {
+						<span class="context-pane-discussion-count badge badge-sm badge-ghost px-1.5 text-sm leading-none font-bold" x-text="$store.contextPane.pullRequestComments"></span>
+					}
 					<div class="context-pane-section-content" x-show="!$data.collapsed">
 						<div class="discussion-comments flex flex-col" data-loaded="false" data-loading="false"></div>
 					</div>
 				</section>
 				<section class="context-pane-section context-pane-card" x-data="{ collapsed: true }" x-show="$store.contextPane.open">
-					<div
-						class="context-pane-section-heading group/section flex cursor-pointer items-center justify-between gap-2 px-3 py-2 transition-colors hover:bg-base-200 focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-primary compact:px-2 compact:py-1"
-						role="button"
-						tabindex="0"
-						:aria-expanded="!$data.collapsed"
-						:aria-label="$data.collapsed ? 'Expand changes' : 'Collapse changes'"
-						@click="if (!$event.target.closest('button,a')) { $data.collapsed = !$data.collapsed; if (!$data.collapsed) $store.contextPane.loadChanges() }"
-						@keydown.enter.prevent="$data.collapsed = !$data.collapsed; if (!$data.collapsed) $store.contextPane.loadChanges()"
-						@keydown.space.prevent="$data.collapsed = !$data.collapsed; if (!$data.collapsed) $store.contextPane.loadChanges()"
-						:class="!$data.collapsed && 'border-b border-base-300'"
-					>
-						<span class="section-heading-label font-heading flex min-w-0 items-center gap-2 text-sm font-bold">
-							<span class="section-heading-control relative inline-flex h-8 w-6 flex-none items-center justify-center compact:h-6">
-								<i class="fa-solid fa-code-compare section-heading-icon text-base-content/60 transition-opacity group-hover/section:opacity-0 group-focus-within/section:opacity-0 pointer-coarse:opacity-0" aria-hidden="true"></i>
-								<button
-									class="link-button collapse-section-button absolute inset-y-0 left-0 inline-flex w-6 items-center justify-center rounded-md border-0 bg-transparent text-xs leading-none text-base-content/60 opacity-0 pointer-events-none transition-opacity hover:bg-base-content/10 hover:text-base-content focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary group-hover/section:pointer-events-auto group-hover/section:opacity-100 group-focus-within/section:pointer-events-auto group-focus-within/section:opacity-100 pointer-coarse:pointer-events-auto pointer-coarse:opacity-100"
-									type="button"
-									:aria-expanded="!$data.collapsed"
-									:aria-label="$data.collapsed ? 'Expand changes' : 'Collapse changes'"
-									:title="$data.collapsed ? 'Expand changes' : 'Collapse changes'"
-									@click.stop="$data.collapsed = !$data.collapsed; if (!$data.collapsed) $store.contextPane.loadChanges()"
-								>
-									<i class="fa-solid" :class="$data.collapsed ? 'fa-chevron-down' : 'fa-chevron-up'" aria-hidden="true"></i>
-								</button>
-							</span>
-							<span>Changes</span>
-						</span>
-					</div>
+					@CollapsibleSectionHeading("Changes", "fa-code-compare", "$store.contextPane.loadChanges()")
 					<div class="context-pane-section-content" x-show="!$data.collapsed">
 						<div class="context-pane-diffs" x-ref="changes"></div>
 					</div>

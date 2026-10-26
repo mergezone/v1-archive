@@ -53,7 +53,9 @@ func (f RepositoryFilters) FragmentURL(fragment string, page int) string {
 	if page > 1 {
 		q.Set("page", strconv.Itoa(page))
 	}
-	q.Set("fragment", fragment)
+	if fragment != "" {
+		q.Set("fragment", fragment)
+	}
 	u.RawQuery = encodeQueryValues(q)
 	return u.String()
 }
@@ -68,15 +70,11 @@ func (f RepositoryFilters) Label() string {
 	return strings.Join(values, ", ")
 }
 
+// PageURL builds the URL for a paginated pull request load. It delegates to
+// FragmentURL with no fragment name so page and fragment requests share one
+// helper, and it never adds a page parameter for the first page.
 func (f RepositoryFilters) PageURL(page int) string {
-	if page <= 1 {
-		return f.URL()
-	}
-	u := url.URL{Path: f.basePath()}
-	q := f.queryValues()
-	q.Set("page", strconv.Itoa(page))
-	u.RawQuery = encodeQueryValues(q)
-	return u.String()
+	return f.FragmentURL("", page)
 }
 
 func (f RepositoryFilters) basePath() string {

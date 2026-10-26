@@ -40,11 +40,11 @@ state and activates the other state when pressed.
 
 ### Typography
 
-- Manrope is the heading family; system UI remains the body family.
-- Heading font family and role weights are centralized in `app.css` under
-  `--type-heading-font` and the `type-*` classes. Use `type-primary-heading`,
-  `type-section-heading`, or `type-card-heading` in templates instead of adding
-  local font-family/weight utilities. Sidebar entries use `type-sidebar-entry`.
+- Manrope is the heading family, loaded from Google Fonts in
+  `layout/base.templ`; system UI remains the body family.
+- Heading roles use the `font-heading` utility plus Tailwind weight utilities
+  (`font-extrabold`, `font-bold`, `font-semibold`). Sidebar entries use
+  `font-normal` for contrast against their section headings.
 
 ### Component styling
 

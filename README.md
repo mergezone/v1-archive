@@ -33,9 +33,9 @@ architecture-beta
 
 ## Frontend styles
 
-Styles are built with Tailwind CSS v4 and DaisyUI. The source of truth is
-`internal/views/styles/app.css` for theme tokens and runtime-only CSS; component
-styling lives directly in the Templ files.
+Styles are built with Tailwind CSS v4 and DaisyUI. Theme tokens and the small
+amount of custom CSS live in `internal/views/styles/app.css`; component
+structure and Tailwind utility classes live directly in the Templ files.
 
 ```sh
 pnpm run build:css   # compile public/main.css
