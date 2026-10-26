@@ -24,7 +24,7 @@ Remaining audit remediation items from the consistency-first design audit.
 
 - [ ] **D1** Audit `app.css` class-by-class against Tailwind/DaisyUI; convert simple ones
 - [ ] **L1** Further consolidate responsive and density media queries
-- [ ] Group `@media (max-width: 63.999rem)` backdrop rules into a single block
+- [x] Group `@media (max-width: 63.999rem)` backdrop rules into a single block
 - [x] Self-host Manrope or document the Google Fonts dependency
 
 ## Follow-ups

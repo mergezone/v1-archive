@@ -1249,6 +1249,16 @@
     .context-pane-resize {
       display: none;
     }
+
+    /* Dim the page behind an open bottom sheet and absorb outside taps. */
+    body:has(.filter-panel[data-open="true"])::after,
+    body:has(.context-pane[data-open="true"])::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: 20;
+      background-color: rgb(0 0 0 / 0.4);
+    }
   }
 }
 
@@ -1671,18 +1681,6 @@
 /* The home route has no mobile dock, so don't reserve space for one. */
 .page-shell:has(.home-main) {
   padding-bottom: 0;
-}
-
-@media (max-width: 63.999rem) {
-  /* Dim the page behind an open bottom sheet and absorb outside taps. */
-  body:has(.filter-panel[data-open="true"])::after,
-  body:has(.context-pane[data-open="true"])::after {
-    content: "";
-    position: fixed;
-    inset: 0;
-    z-index: 20;
-    background-color: rgb(0 0 0 / 0.4);
-  }
 }
 
 body.pane-resizing,
