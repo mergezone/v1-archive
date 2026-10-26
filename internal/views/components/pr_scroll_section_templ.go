@@ -122,13 +122,21 @@ func PullRequestScrollSection(pullRequests []model.StampedPullRequest, filters m
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "</div>")
+		if len(pullRequests) == 0 {
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "<div class=\"flex min-h-16 items-center justify-center rounded-lg border border-dashed border-base-300 bg-base-100 text-sm text-base-content/60\">No pull requests match the current filters.</div>")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+		}
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 7, "</div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = PullRequestLoadMoreControl(filters, currentPage+1, hasMorePullRequests, false).Render(ctx, templ_7745c5c3_Buffer)
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
+		if hasMorePullRequests {
+			templ_7745c5c3_Err = PullRequestLoadMoreControl(filters, currentPage+1, hasMorePullRequests, false).Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
 		}
 		return nil
 	})

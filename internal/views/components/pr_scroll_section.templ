@@ -35,6 +35,13 @@ templ PullRequestScrollSection(pullRequests []model.StampedPullRequest, filters 
 	</h2>
 	<div class="pull-request-list" id="scroll-content">
 		@PullRequestScrollItems(pullRequests, filters)
+		if len(pullRequests) == 0 {
+			<div class="flex min-h-16 items-center justify-center rounded-lg border border-dashed border-base-300 bg-base-100 text-sm text-base-content/60">
+				No pull requests match the current filters.
+			</div>
+		}
 	</div>
-	@PullRequestLoadMoreControl(filters, currentPage+1, hasMorePullRequests, false)
+	if hasMorePullRequests {
+		@PullRequestLoadMoreControl(filters, currentPage+1, hasMorePullRequests, false)
+	}
 }

@@ -22,7 +22,7 @@ templ BaseDocument(title, description, baseURL, owner, repository, scope string)
 			<meta property="og:url" content={ baseURL }/>
 			<meta property="og:description" content={ description }/>
 		</head>
-		<body class="repository-page h-dvh overflow-hidden bg-base-200 text-base-content" x-data x-init="$store.app.init()">
+		<body class="h-dvh overflow-hidden bg-base-200 text-base-content" x-data x-init="$store.app.init()">
 			<div class="page-shell box-border flex h-full min-h-0 w-full flex-col gap-6 pb-[calc(4rem+env(safe-area-inset-bottom))] compact:max-lg:gap-3 lg:flex-row lg:gap-0 lg:pb-0" id="page-shell">
 				{ children... }
 			</div>

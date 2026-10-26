@@ -291,6 +291,24 @@ function syncSearchPlacement() {
   }
 }
 
+// Preserve the open pull request in repository navigations that are triggered
+// after the context pane has been opened client-side.
+document.addEventListener("htmx:configRequest", (event) => {
+  const target = event.detail?.target;
+  if (!target || target.id !== "page-shell") return;
+  const store = window.Alpine?.store?.("contextPane");
+  if (!store?.open || !store.pullRequestNumber) return;
+  try {
+    const url = new URL(event.detail.path, window.location.origin);
+    if (!url.searchParams.has("pr")) {
+      url.searchParams.set("pr", String(store.pullRequestNumber));
+      event.detail.path = url.pathname + url.search;
+    }
+  } catch (error) {
+    // Leave the original request untouched if the path cannot be parsed.
+  }
+});
+
 document.addEventListener("alpine:init", () => {
   window.addEventListener("resize", () => {
     window.clearTimeout(window._searchPlacementTimer);
