@@ -27,10 +27,6 @@ templ PullRequestCard(pullRequest model.StampedPullRequest, filters model.Reposi
 			})
 		}
 		scopeJSON, _ := json.Marshal(scopeItems)
-		paneSeed := map[string]any{
-			"titleHtml": helpers.RenderMarkdownInline(pullRequest.Title),
-			"bodyHtml":  helpers.RenderMarkdown(pullRequest.Body),
-		}
 	}}
 	<div
 		class="pull-request-card"
@@ -60,9 +56,8 @@ templ PullRequestCard(pullRequest model.StampedPullRequest, filters model.Reposi
 		}
 		hx-on:click="Alpine.store('contextPane').openPane(Number(this.dataset.pullRequestNumber), this.dataset)"
 	>
-		<div hidden class="pull-request-seed">
-			@templ.JSONScript("", paneSeed)
-		</div>
+		<div hidden class="pull-request-title-html" aria-hidden="true">@templ.Raw(helpers.RenderMarkdownInline(pullRequest.Title))</div>
+		<div hidden class="pull-request-body-html" aria-hidden="true">@templ.Raw(helpers.RenderMarkdown(pullRequest.Body))</div>
 		<div class="pull-request-header">
 			<div class="pull-request-status">
 				<i class={ fmt.Sprintf("status-icon fa-solid pull-request-status-icon %s", helpers.GetStatusClass(pullRequest)) }></i>

@@ -626,21 +626,25 @@ document.addEventListener("alpine:init", () => {
       this._cleanup();
       this._resetDiscussion();
 
-      let seed = {};
-      try {
-        const card = document.querySelector(
-          `.pull-request[data-pull-request-number="${pullRequestNumber}"]`,
-        );
-        const seedNode = card?.querySelector(
-          '.pull-request-seed script[type="application/json"]',
-        );
-        seed = JSON.parse(
-          seedNode?.textContent || dataset.pullRequestSeed || "{}",
-        );
-        if (Object.keys(seed).length)
-          this._seedByPullRequest.set(pullRequestNumber, seed);
-      } catch (error) {
-        console.warn("[context-pane] invalid pull request seed", error);
+      let seed = this._seedByPullRequest.get(pullRequestNumber) || {};
+      if (!seed.titleHtml && !seed.bodyHtml) {
+        try {
+          const card = document.querySelector(
+            `.pull-request[data-pull-request-number="${pullRequestNumber}"]`,
+          );
+          seed = {
+            titleHtml:
+              card?.querySelector(".pull-request-title-html")?.innerHTML || "",
+            bodyHtml:
+              card?.querySelector(".pull-request-body-html")?.innerHTML || "",
+          };
+          if (seed.titleHtml || seed.bodyHtml) {
+            this._seedByPullRequest.set(pullRequestNumber, seed);
+          }
+        } catch (error) {
+          console.warn("[context-pane] invalid pull request seed", error);
+          seed = {};
+        }
       }
 
       this.pullRequestNumber =
@@ -756,9 +760,7 @@ document.addEventListener("alpine:init", () => {
 
       const seeded = this._seedByPullRequest.get(pullRequestNumber);
       if (seeded) {
-        this.openPane(pullRequestNumber, {
-          pullRequestSeed: JSON.stringify(seeded),
-        });
+        this.openPane(pullRequestNumber);
         return;
       }
 
