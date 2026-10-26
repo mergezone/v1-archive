@@ -58,6 +58,23 @@ state and activates the other state when pressed.
 - Markdown wrappers keep the `prose` roles in markup; shared media sizing and
   spacing belong to `.markdown-content` in the component stylesheet.
 
+### Intentional `!important` exceptions
+
+The stylesheet avoids `!important` except where a higher-specificity or
+third-party boundary cannot be overridden otherwise:
+
+- `[x-cloak] { display: none !important; }` prevents Alpine-managed elements
+  from flashing before Alpine initializes.
+- `body.pane-resizing, body.pane-resizing *` forces the column-resize cursor
+  and disables text selection across the whole document while a pane handle is
+  being dragged.
+- `.medium-zoom-overlay`, `.medium-zoom-image--opened`, and
+  `.medium-zoom-image--zoomed` raise zoomed images above the app's own
+  stacking contexts.
+- `diffs-container .pierre-diff` and `.pierre-gutter` overrides apply theme
+  variables to the shadow-DOM-rendered `@pierre/diffs` output, which does not
+  inherit Tailwind/DaisyUI classes.
+
 ### Markup conventions
 
 | Before | After |

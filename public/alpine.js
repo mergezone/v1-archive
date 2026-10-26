@@ -862,15 +862,6 @@ document.addEventListener("alpine:init", () => {
             url: scope.url || "#",
           }));
       }
-      // Older or seedless cards may only provide the original first-scope fields.
-      if (dataset.pullRequestScope) {
-        return [
-          {
-            name: dataset.pullRequestScope,
-            url: dataset.pullRequestScopeUrl || "#",
-          },
-        ];
-      }
       return [];
     },
 

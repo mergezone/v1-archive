@@ -84,8 +84,6 @@ templ PullRequestCard(pullRequest model.StampedPullRequest, filters model.Reposi
 		data-pull-request-author-url={ pullRequest.Author.URL }
 		data-pull-request-author-avatar-url={ pullRequest.Author.AvatarURL }
 		if len(scopeItems) > 0 {
-			data-pull-request-scope={ scopeItems[0]["name"] }
-			data-pull-request-scope-url={ scopeItems[0]["url"] }
 			data-pull-request-scopes={ string(scopeJSON) }
 		}
 		hx-on:click="Alpine.store('contextPane').openPane(Number(this.dataset.pullRequestNumber), this.dataset)"

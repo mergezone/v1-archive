@@ -91,7 +91,7 @@ func TestRepositorySummaryFragmentsEmitTimings(t *testing.T) {
 }
 
 func TestRepositoryDetailFragmentsEmitTimings(t *testing.T) {
-	for _, fragment := range []string{"pr-detail", "pr-discussion"} {
+	for _, fragment := range []string{"pr-discussion"} {
 		t.Run(fragment, func(t *testing.T) {
 			stub := &stubProvider{pullRequests: []model.StampedPullRequest{{PullRequest: model.PullRequest{Number: 1}}}}
 			handler := repositoryTimingHandler(stub, 1)

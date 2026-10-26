@@ -96,7 +96,4 @@ func TestPullRequestCardSeedsEveryScopeForContextPane(t *testing.T) {
 	if !strings.Contains(output, fallback) {
 		t.Errorf("scope dataset fallback should include every scope and URL: %q", output)
 	}
-	if !strings.Contains(output, `data-pull-request-scope="api" data-pull-request-scope-url="/octocat/hello?scope=api"`) {
-		t.Error("scope dataset should retain the first-scope fallback fields")
-	}
 }

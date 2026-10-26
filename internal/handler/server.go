@@ -131,7 +131,6 @@ func sidebarSummaries(allPullRequests []model.StampedPullRequest, scopeSortOrder
 type RepositoryFragment string
 
 const (
-	PullRequestDetailFragment     RepositoryFragment = "pr-detail"
 	PullRequestDiscussionFragment RepositoryFragment = "pr-discussion"
 	ContributorsFragment          RepositoryFragment = "contributors"
 	ScopesFragment                RepositoryFragment = "scopes"
@@ -294,24 +293,6 @@ func HandleRepository(request *RepositoryRequest, w http.ResponseWriter, r *http
 				}
 				markRequestWorkComplete(r)
 				err = components.PullRequestDiscussion(comments).Render(r.Context(), w)
-				if err != nil {
-					request.Logger.Error(err.Error())
-				}
-				return
-			}
-		}
-		http.Error(w, "Pull request not found", http.StatusNotFound)
-		return
-	case PullRequestDetailFragment:
-		pullRequestNumber, err := strconv.Atoi(r.URL.Query().Get("number"))
-		if err != nil {
-			http.Error(w, "Invalid pull request number", http.StatusBadRequest)
-			return
-		}
-		for _, pullRequest := range viewData.PullRequests {
-			if pullRequest.Number == pullRequestNumber {
-				markRequestWorkComplete(r)
-				err = components.PullRequestDetail(pullRequest).Render(r.Context(), w)
 				if err != nil {
 					request.Logger.Error(err.Error())
 				}

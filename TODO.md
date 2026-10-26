@@ -4,9 +4,9 @@ Remaining audit remediation items from the consistency-first design audit.
 
 ## Priority 1 — Small, isolated fixes
 
-- [ ] **L6** Document `!important` exceptions (diff shadow DOM, pane resize) as intentional in PROGRESS.md
-- [ ] **L4** Drop singular `data-pull-request-scope` attribute now that plural payload exists
-- [ ] **D6** Verify `pane_content.templ` is truly unused before deleting (currently referenced by `server.go`)
+- [x] **L6** Document `!important` exceptions (diff shadow DOM, pane resize) as intentional in PROGRESS.md
+- [x] **L4** Drop singular `data-pull-request-scope` attribute now that plural payload exists
+- [x] **D6** Remove `pane_content.templ` / `PullRequestDetail` fragment; compose context pane from smaller components instead
 
 ## Priority 2 — Component consolidation
 
@@ -25,7 +25,7 @@ Remaining audit remediation items from the consistency-first design audit.
 - [ ] **D1** Audit `app.css` class-by-class against Tailwind/DaisyUI; convert simple ones
 - [ ] **L1** Further consolidate responsive and density media queries
 - [ ] Group `@media (max-width: 63.999rem)` backdrop rules into a single block
-- [ ] Self-host Manrope or document the Google Fonts dependency
+- [x] Self-host Manrope or document the Google Fonts dependency
 
 ## Follow-ups
 
