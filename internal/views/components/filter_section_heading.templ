@@ -22,8 +22,8 @@ templ FilterSectionHeading(section, icon, sortSection, activeSort string, filter
 					class="collapse-section-button absolute inset-y-0 left-0 inline-flex w-6 items-center justify-center rounded-md border-0 bg-transparent text-xs leading-none text-base-content/60 opacity-0 pointer-events-none transition-opacity hover:bg-base-content/10 hover:text-base-content focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary group-hover/section:pointer-events-auto group-hover/section:opacity-100 group-focus-within/section:pointer-events-auto group-focus-within/section:opacity-100 pointer-coarse:pointer-events-auto pointer-coarse:opacity-100"
 					type="button"
 					:aria-expanded="!$data.collapsed"
-					:aria-label="$data.collapsed ? 'Expand ' + section : 'Collapse ' + section"
-					:title="$data.collapsed ? 'Expand ' + section : 'Collapse ' + section"
+					:aria-label={ "$data.collapsed ? 'Expand " + section + "' : 'Collapse " + section + "'" }
+					:title={ "$data.collapsed ? 'Expand " + section + "' : 'Collapse " + section + "'" }
 					@click.stop="$data.collapsed = !$data.collapsed"
 				>
 					<i class="fa-solid" :class="$data.collapsed ? 'fa-chevron-down' : 'fa-chevron-up'" aria-hidden="true"></i>

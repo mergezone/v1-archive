@@ -57,184 +57,210 @@ func FilterSectionHeading(section, icon, sortSection, activeSort string, filters
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "\" aria-hidden=\"true\"></i> <button class=\"collapse-section-button absolute inset-y-0 left-0 inline-flex w-6 items-center justify-center rounded-md border-0 bg-transparent text-xs leading-none text-base-content/60 opacity-0 pointer-events-none transition-opacity hover:bg-base-content/10 hover:text-base-content focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary group-hover/section:pointer-events-auto group-hover/section:opacity-100 group-focus-within/section:pointer-events-auto group-focus-within/section:opacity-100 pointer-coarse:pointer-events-auto pointer-coarse:opacity-100\" type=\"button\" :aria-expanded=\"!$data.collapsed\" :aria-label=\"$data.collapsed ? 'Expand ' + section : 'Collapse ' + section\" :title=\"$data.collapsed ? 'Expand ' + section : 'Collapse ' + section\" @click.stop=\"$data.collapsed = !$data.collapsed\"><i class=\"fa-solid\" :class=\"$data.collapsed ? 'fa-chevron-down' : 'fa-chevron-up'\" aria-hidden=\"true\"></i></button></span> <span>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "\" aria-hidden=\"true\"></i> <button class=\"collapse-section-button absolute inset-y-0 left-0 inline-flex w-6 items-center justify-center rounded-md border-0 bg-transparent text-xs leading-none text-base-content/60 opacity-0 pointer-events-none transition-opacity hover:bg-base-content/10 hover:text-base-content focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary group-hover/section:pointer-events-auto group-hover/section:opacity-100 group-focus-within/section:pointer-events-auto group-focus-within/section:opacity-100 pointer-coarse:pointer-events-auto pointer-coarse:opacity-100\" type=\"button\" :aria-expanded=\"!$data.collapsed\" :aria-label=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var4 string
-		templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(section)
+		templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.ResolveAttributeValue("$data.collapsed ? 'Expand " + section + "' : 'Collapse " + section + "'")
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/views/components/filter_section_heading.templ`, Line: 32, Col: 18}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/views/components/filter_section_heading.templ`, Line: 25, Col: 92}
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var4)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "</span></span> ")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "\" :title=\"")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		var templ_7745c5c3_Var5 string
+		templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.ResolveAttributeValue("$data.collapsed ? 'Expand " + section + "' : 'Collapse " + section + "'")
+		if templ_7745c5c3_Err != nil {
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/views/components/filter_section_heading.templ`, Line: 26, Col: 87}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var5)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "\" @click.stop=\"$data.collapsed = !$data.collapsed\"><i class=\"fa-solid\" :class=\"$data.collapsed ? 'fa-chevron-down' : 'fa-chevron-up'\" aria-hidden=\"true\"></i></button></span> <span>")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		var templ_7745c5c3_Var6 string
+		templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(section)
+		if templ_7745c5c3_Err != nil {
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/views/components/filter_section_heading.templ`, Line: 32, Col: 18}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "</span></span> ")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		if sortSection != "" {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "<span class=\"section-actions flex items-center gap-1 opacity-0 pointer-events-none transition-opacity group-hover/section:pointer-events-auto group-hover/section:opacity-100 group-focus-within/section:pointer-events-auto group-focus-within/section:opacity-100 pointer-coarse:pointer-events-auto pointer-coarse:opacity-100\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 7, "<span class=\"section-actions flex items-center gap-1 opacity-0 pointer-events-none transition-opacity group-hover/section:pointer-events-auto group-hover/section:opacity-100 group-focus-within/section:pointer-events-auto group-focus-within/section:opacity-100 pointer-coarse:pointer-events-auto pointer-coarse:opacity-100\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			if sortSection == "scopes" {
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "<span id=\"scopes-sort-indicator\" class=\"loading loading-spinner loading-xs htmx-indicator text-base-content/50\" aria-hidden=\"true\"></span> <button class=\"link-button sort-control inline-flex size-8 items-center justify-center rounded-md border-0 bg-transparent text-xs text-base-content/60 transition-all hover:bg-base-content/10 hover:text-base-content active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary data-[active-sort=true]:bg-base-300 data-[active-sort=true]:text-base-content compact:size-6\" aria-label=\"Sort scopes by recency\" title=\"Sort by recency\"")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, "<span id=\"scopes-sort-indicator\" class=\"loading loading-spinner loading-xs htmx-indicator text-base-content/50\" aria-hidden=\"true\"></span> <button class=\"link-button sort-control inline-flex size-8 items-center justify-center rounded-md border-0 bg-transparent text-xs text-base-content/60 transition-all hover:bg-base-content/10 hover:text-base-content active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary data-[active-sort=true]:bg-base-300 data-[active-sort=true]:text-base-content compact:size-6\" aria-label=\"Sort scopes by recency\" title=\"Sort by recency\"")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 				if activeSort == "recent" {
-					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 7, " data-active-sort=\"true\"")
+					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 9, " data-active-sort=\"true\"")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
 				}
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, " hx-get=\"")
-				if templ_7745c5c3_Err != nil {
-					return templ_7745c5c3_Err
-				}
-				var templ_7745c5c3_Var5 string
-				templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.ResolveAttributeValue(filters.WithScopeSort("recent").FragmentURL("scopes", currentPage))
-				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/views/components/filter_section_heading.templ`, Line: 45, Col: 81}
-				}
-				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var5)
-				if templ_7745c5c3_Err != nil {
-					return templ_7745c5c3_Err
-				}
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 9, "\" hx-target=\"#scopes-section\" hx-push-url=\"")
-				if templ_7745c5c3_Err != nil {
-					return templ_7745c5c3_Err
-				}
-				var templ_7745c5c3_Var6 string
-				templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.ResolveAttributeValue(filters.WithScopeSort("recent").URL())
-				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/views/components/filter_section_heading.templ`, Line: 47, Col: 57}
-				}
-				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var6)
-				if templ_7745c5c3_Err != nil {
-					return templ_7745c5c3_Err
-				}
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 10, "\" hx-indicator=\"#scopes-sort-indicator\"><i class=\"fa-solid fa-clock\" aria-hidden=\"true\"></i></button> <button class=\"link-button sort-control inline-flex size-8 items-center justify-center rounded-md border-0 bg-transparent text-xs text-base-content/60 transition-all hover:bg-base-content/10 hover:text-base-content active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary data-[active-sort=true]:bg-base-300 data-[active-sort=true]:text-base-content compact:size-6\" aria-label=\"Sort scopes by pull request count\" title=\"Sort by pull request count\"")
-				if templ_7745c5c3_Err != nil {
-					return templ_7745c5c3_Err
-				}
-				if activeSort == "top" {
-					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 11, " data-active-sort=\"true\"")
-					if templ_7745c5c3_Err != nil {
-						return templ_7745c5c3_Err
-					}
-				}
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 12, " hx-get=\"")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 10, " hx-get=\"")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 				var templ_7745c5c3_Var7 string
-				templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.ResolveAttributeValue(filters.WithScopeSort("top").FragmentURL("scopes", currentPage))
+				templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.ResolveAttributeValue(filters.WithScopeSort("recent").FragmentURL("scopes", currentPage))
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/views/components/filter_section_heading.templ`, Line: 59, Col: 78}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/views/components/filter_section_heading.templ`, Line: 45, Col: 81}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var7)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 13, "\" hx-target=\"#scopes-section\" hx-push-url=\"")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 11, "\" hx-target=\"#scopes-section\" hx-push-url=\"")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 				var templ_7745c5c3_Var8 string
-				templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.ResolveAttributeValue(filters.WithScopeSort("top").URL())
+				templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.ResolveAttributeValue(filters.WithScopeSort("recent").URL())
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/views/components/filter_section_heading.templ`, Line: 61, Col: 54}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/views/components/filter_section_heading.templ`, Line: 47, Col: 57}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var8)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 14, "\" hx-indicator=\"#scopes-sort-indicator\"><i class=\"fa-solid fa-arrow-down-wide-short\" aria-hidden=\"true\"></i></button>")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 12, "\" hx-indicator=\"#scopes-sort-indicator\"><i class=\"fa-solid fa-clock\" aria-hidden=\"true\"></i></button> <button class=\"link-button sort-control inline-flex size-8 items-center justify-center rounded-md border-0 bg-transparent text-xs text-base-content/60 transition-all hover:bg-base-content/10 hover:text-base-content active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary data-[active-sort=true]:bg-base-300 data-[active-sort=true]:text-base-content compact:size-6\" aria-label=\"Sort scopes by pull request count\" title=\"Sort by pull request count\"")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-			} else if sortSection == "contributors" {
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 15, "<span id=\"contributors-sort-indicator\" class=\"loading loading-spinner loading-xs htmx-indicator text-base-content/50\" aria-hidden=\"true\"></span> <button class=\"link-button sort-control inline-flex size-8 items-center justify-center rounded-md border-0 bg-transparent text-xs text-base-content/60 transition-all hover:bg-base-content/10 hover:text-base-content active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary data-[active-sort=true]:bg-base-300 data-[active-sort=true]:text-base-content compact:size-6\" aria-label=\"Sort contributors by recency\" title=\"Sort by recency\"")
-				if templ_7745c5c3_Err != nil {
-					return templ_7745c5c3_Err
-				}
-				if activeSort == "recent" {
-					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 16, " data-active-sort=\"true\"")
+				if activeSort == "top" {
+					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 13, " data-active-sort=\"true\"")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
 				}
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 17, " hx-get=\"")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 14, " hx-get=\"")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 				var templ_7745c5c3_Var9 string
-				templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.ResolveAttributeValue(filters.WithContributorSort("recent").FragmentURL("contributors", currentPage))
+				templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.ResolveAttributeValue(filters.WithScopeSort("top").FragmentURL("scopes", currentPage))
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/views/components/filter_section_heading.templ`, Line: 75, Col: 93}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/views/components/filter_section_heading.templ`, Line: 59, Col: 78}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var9)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 18, "\" hx-target=\"#contributors-section\" hx-push-url=\"")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 15, "\" hx-target=\"#scopes-section\" hx-push-url=\"")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 				var templ_7745c5c3_Var10 string
-				templ_7745c5c3_Var10, templ_7745c5c3_Err = templ.ResolveAttributeValue(filters.WithContributorSort("recent").URL())
+				templ_7745c5c3_Var10, templ_7745c5c3_Err = templ.ResolveAttributeValue(filters.WithScopeSort("top").URL())
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/views/components/filter_section_heading.templ`, Line: 77, Col: 63}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/views/components/filter_section_heading.templ`, Line: 61, Col: 54}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var10)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 19, "\" hx-indicator=\"#contributors-sort-indicator\"><i class=\"fa-solid fa-clock\" aria-hidden=\"true\"></i></button> <button class=\"link-button sort-control inline-flex size-8 items-center justify-center rounded-md border-0 bg-transparent text-xs text-base-content/60 transition-all hover:bg-base-content/10 hover:text-base-content active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary data-[active-sort=true]:bg-base-300 data-[active-sort=true]:text-base-content compact:size-6\" aria-label=\"Sort contributors by pull request count\" title=\"Sort by pull request count\"")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 16, "\" hx-indicator=\"#scopes-sort-indicator\"><i class=\"fa-solid fa-arrow-down-wide-short\" aria-hidden=\"true\"></i></button>")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				if activeSort == "top" {
-					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 20, " data-active-sort=\"true\"")
+			} else if sortSection == "contributors" {
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 17, "<span id=\"contributors-sort-indicator\" class=\"loading loading-spinner loading-xs htmx-indicator text-base-content/50\" aria-hidden=\"true\"></span> <button class=\"link-button sort-control inline-flex size-8 items-center justify-center rounded-md border-0 bg-transparent text-xs text-base-content/60 transition-all hover:bg-base-content/10 hover:text-base-content active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary data-[active-sort=true]:bg-base-300 data-[active-sort=true]:text-base-content compact:size-6\" aria-label=\"Sort contributors by recency\" title=\"Sort by recency\"")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				if activeSort == "recent" {
+					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 18, " data-active-sort=\"true\"")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
 				}
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 21, " hx-get=\"")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 19, " hx-get=\"")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 				var templ_7745c5c3_Var11 string
-				templ_7745c5c3_Var11, templ_7745c5c3_Err = templ.ResolveAttributeValue(filters.WithContributorSort("top").FragmentURL("contributors", currentPage))
+				templ_7745c5c3_Var11, templ_7745c5c3_Err = templ.ResolveAttributeValue(filters.WithContributorSort("recent").FragmentURL("contributors", currentPage))
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/views/components/filter_section_heading.templ`, Line: 89, Col: 90}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/views/components/filter_section_heading.templ`, Line: 75, Col: 93}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var11)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 22, "\" hx-target=\"#contributors-section\" hx-push-url=\"")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 20, "\" hx-target=\"#contributors-section\" hx-push-url=\"")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 				var templ_7745c5c3_Var12 string
-				templ_7745c5c3_Var12, templ_7745c5c3_Err = templ.ResolveAttributeValue(filters.WithContributorSort("top").URL())
+				templ_7745c5c3_Var12, templ_7745c5c3_Err = templ.ResolveAttributeValue(filters.WithContributorSort("recent").URL())
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/views/components/filter_section_heading.templ`, Line: 91, Col: 60}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/views/components/filter_section_heading.templ`, Line: 77, Col: 63}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var12)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 23, "\" hx-indicator=\"#contributors-sort-indicator\"><i class=\"fa-solid fa-arrow-down-wide-short\" aria-hidden=\"true\"></i></button>")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 21, "\" hx-indicator=\"#contributors-sort-indicator\"><i class=\"fa-solid fa-clock\" aria-hidden=\"true\"></i></button> <button class=\"link-button sort-control inline-flex size-8 items-center justify-center rounded-md border-0 bg-transparent text-xs text-base-content/60 transition-all hover:bg-base-content/10 hover:text-base-content active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary data-[active-sort=true]:bg-base-300 data-[active-sort=true]:text-base-content compact:size-6\" aria-label=\"Sort contributors by pull request count\" title=\"Sort by pull request count\"")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				if activeSort == "top" {
+					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 22, " data-active-sort=\"true\"")
+					if templ_7745c5c3_Err != nil {
+						return templ_7745c5c3_Err
+					}
+				}
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 23, " hx-get=\"")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				var templ_7745c5c3_Var13 string
+				templ_7745c5c3_Var13, templ_7745c5c3_Err = templ.ResolveAttributeValue(filters.WithContributorSort("top").FragmentURL("contributors", currentPage))
+				if templ_7745c5c3_Err != nil {
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/views/components/filter_section_heading.templ`, Line: 89, Col: 90}
+				}
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var13)
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 24, "\" hx-target=\"#contributors-section\" hx-push-url=\"")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				var templ_7745c5c3_Var14 string
+				templ_7745c5c3_Var14, templ_7745c5c3_Err = templ.ResolveAttributeValue(filters.WithContributorSort("top").URL())
+				if templ_7745c5c3_Err != nil {
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/views/components/filter_section_heading.templ`, Line: 91, Col: 60}
+				}
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var14)
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 25, "\" hx-indicator=\"#contributors-sort-indicator\"><i class=\"fa-solid fa-arrow-down-wide-short\" aria-hidden=\"true\"></i></button>")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 24, "</span>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 26, "</span>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -243,7 +269,7 @@ func FilterSectionHeading(section, icon, sortSection, activeSort string, filters
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 25, "</div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 27, "</div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
