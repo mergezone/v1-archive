@@ -76,3 +76,33 @@ templ ContributorCard(contributor model.ContributorInfo, filters model.Repositor
 		</span>
 	</a>
 }
+
+templ ScopeSummaries(scopeSummaries []model.ScopeInfo, activeSortOrder string, filters model.RepositoryFilters, currentPage int) {
+	<section class="panel scopes flex min-h-0 flex-1 flex-col overflow-hidden">
+		<div x-data="{ collapsed: false }">
+			@FilterSectionHeading("Scopes", "fa-folder-tree", "scopes", activeSortOrder, filters, currentPage)
+		</div>
+		<div class="filter-section-content flex flex-col gap-1 compact:gap-0.5" x-show="!$data.collapsed">
+			if len(scopeSummaries) > 0 {
+				for _, scope := range scopeSummaries {
+					@ScopeCard(scope, filters)
+				}
+			}
+		</div>
+	</section>
+}
+
+templ ContributorSummaries(contributorSummaries []model.ContributorInfo, activeSortOrder string, filters model.RepositoryFilters, currentPage int) {
+	<section class="panel contributors filter-section flex min-h-0 flex-1 flex-col overflow-hidden">
+		<div x-data="{ collapsed: false }">
+			@FilterSectionHeading("Contributors", "fa-users", "contributors", activeSortOrder, filters, currentPage)
+		</div>
+		<div class="filter-section-content flex flex-col gap-1 compact:gap-0.5" x-show="!$data.collapsed">
+			if len(contributorSummaries) > 0 {
+				for _, contributor := range contributorSummaries {
+					@ContributorCard(contributor, filters)
+				}
+			}
+		</div>
+	</section>
+}

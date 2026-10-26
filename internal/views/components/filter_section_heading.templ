@@ -1,6 +1,12 @@
 package components
 
-templ FilterSectionHeading(section, icon string) {
+import "merge/internal/model"
+
+// FilterSectionHeading renders a collapsible sidebar section heading. When
+// sortSection is non-empty ("scopes" or "contributors"), it also renders the
+// shared recent/top sort controls for that section, so the sort markup lives in
+// one place instead of being duplicated by each caller.
+templ FilterSectionHeading(section, icon, sortSection, activeSort string, filters model.RepositoryFilters, currentPage int) {
 	<div
 		class="filter-section-heading group/section flex cursor-pointer items-center justify-between gap-2 bg-base-200 px-4 py-3 text-base-content transition-colors hover:bg-base-300 focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-primary compact:px-2 compact:py-1.5"
 		role="button"
@@ -25,6 +31,71 @@ templ FilterSectionHeading(section, icon string) {
 			</span>
 			<span>{ section }</span>
 		</span>
+		if sortSection != "" {
+			<span class="section-actions flex items-center gap-1 opacity-0 pointer-events-none transition-opacity group-hover/section:pointer-events-auto group-hover/section:opacity-100 group-focus-within/section:pointer-events-auto group-focus-within/section:opacity-100 pointer-coarse:pointer-events-auto pointer-coarse:opacity-100">
+				if sortSection == "scopes" {
+					<span id="scopes-sort-indicator" class="loading loading-spinner loading-xs htmx-indicator text-base-content/50" aria-hidden="true"></span>
+					<button
+						class="link-button sort-control inline-flex size-8 items-center justify-center rounded-md border-0 bg-transparent text-xs text-base-content/60 transition-all hover:bg-base-content/10 hover:text-base-content active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary data-[active-sort=true]:bg-base-300 data-[active-sort=true]:text-base-content compact:size-6"
+						aria-label="Sort scopes by recency"
+						title="Sort by recency"
+						if activeSort == "recent" {
+							data-active-sort="true"
+						}
+						hx-get={ filters.WithScopeSort("recent").FragmentURL("scopes", currentPage) }
+						hx-target="#scopes-section"
+						hx-push-url={ filters.WithScopeSort("recent").URL() }
+						hx-indicator="#scopes-sort-indicator"
+					>
+						<i class="fa-solid fa-clock" aria-hidden="true"></i>
+					</button>
+					<button
+						class="link-button sort-control inline-flex size-8 items-center justify-center rounded-md border-0 bg-transparent text-xs text-base-content/60 transition-all hover:bg-base-content/10 hover:text-base-content active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary data-[active-sort=true]:bg-base-300 data-[active-sort=true]:text-base-content compact:size-6"
+						aria-label="Sort scopes by pull request count"
+						title="Sort by pull request count"
+						if activeSort == "top" {
+							data-active-sort="true"
+						}
+						hx-get={ filters.WithScopeSort("top").FragmentURL("scopes", currentPage) }
+						hx-target="#scopes-section"
+						hx-push-url={ filters.WithScopeSort("top").URL() }
+						hx-indicator="#scopes-sort-indicator"
+					>
+						<i class="fa-solid fa-arrow-down-wide-short" aria-hidden="true"></i>
+					</button>
+				} else if sortSection == "contributors" {
+					<span id="contributors-sort-indicator" class="loading loading-spinner loading-xs htmx-indicator text-base-content/50" aria-hidden="true"></span>
+					<button
+						class="link-button sort-control inline-flex size-8 items-center justify-center rounded-md border-0 bg-transparent text-xs text-base-content/60 transition-all hover:bg-base-content/10 hover:text-base-content active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary data-[active-sort=true]:bg-base-300 data-[active-sort=true]:text-base-content compact:size-6"
+						aria-label="Sort contributors by recency"
+						title="Sort by recency"
+						if activeSort == "recent" {
+							data-active-sort="true"
+						}
+						hx-get={ filters.WithContributorSort("recent").FragmentURL("contributors", currentPage) }
+						hx-target="#contributors-section"
+						hx-push-url={ filters.WithContributorSort("recent").URL() }
+						hx-indicator="#contributors-sort-indicator"
+					>
+						<i class="fa-solid fa-clock" aria-hidden="true"></i>
+					</button>
+					<button
+						class="link-button sort-control inline-flex size-8 items-center justify-center rounded-md border-0 bg-transparent text-xs text-base-content/60 transition-all hover:bg-base-content/10 hover:text-base-content active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary data-[active-sort=true]:bg-base-300 data-[active-sort=true]:text-base-content compact:size-6"
+						aria-label="Sort contributors by pull request count"
+						title="Sort by pull request count"
+						if activeSort == "top" {
+							data-active-sort="true"
+						}
+						hx-get={ filters.WithContributorSort("top").FragmentURL("contributors", currentPage) }
+						hx-target="#contributors-section"
+						hx-push-url={ filters.WithContributorSort("top").URL() }
+						hx-indicator="#contributors-sort-indicator"
+					>
+						<i class="fa-solid fa-arrow-down-wide-short" aria-hidden="true"></i>
+					</button>
+				}
+			</span>
+		}
 		{ children... }
 	</div>
 }

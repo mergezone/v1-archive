@@ -1194,45 +1194,29 @@ document.addEventListener("alpine:init", () => {
     },
 
     openPanel() {
-      this._moveFiltersToPanel();
+      this._syncFilters(true);
       this.open = true;
     },
 
     close() {
       this.open = false;
-      this._restoreFiltersToSidebar();
+      this._syncFilters(false);
     },
 
-    _restoreFiltersToSidebar() {
-      const sidebar = document.querySelector(
-        ".repository-sidebar .sidebar-filter-scroll",
-      );
-      if (!sidebar) return;
-
+    // Single handler for moving the shared filter sections between the desktop
+    // sidebar and the mobile panel, keeping both views backed by the same DOM.
+    _syncFilters(toPanel) {
+      const sidebar = document.querySelector(".sidebar-filter-scroll");
       const panel = document.querySelector(".filter-panel-body");
       const scopesSection = document.getElementById("scopes-section");
       const contribsSection = document.getElementById("contributors-section");
 
-      if (scopesSection && scopesSection.parentElement === panel) {
-        sidebar.appendChild(scopesSection);
-      }
-      if (contribsSection && contribsSection.parentElement === panel) {
-        sidebar.appendChild(contribsSection);
-      }
-    },
-
-    _moveFiltersToPanel() {
-      const panel = document.querySelector(".filter-panel-body");
-      if (!panel) return;
-
-      const scopesSection = document.getElementById("scopes-section");
-      const contribsSection = document.getElementById("contributors-section");
-
-      if (scopesSection && scopesSection.parentElement !== panel) {
-        panel.appendChild(scopesSection);
-      }
-      if (contribsSection && contribsSection.parentElement !== panel) {
-        panel.appendChild(contribsSection);
+      for (const section of [scopesSection, contribsSection]) {
+        if (!section) continue;
+        const target = toPanel ? panel : sidebar;
+        if (target && section.parentElement !== target) {
+          target.appendChild(section);
+        }
       }
     },
   });

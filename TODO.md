@@ -10,10 +10,10 @@ Remaining audit remediation items from the consistency-first design audit.
 
 ## Priority 2 — Component consolidation
 
-- [ ] **D4** Replace custom mobile dock with DaisyUI `dock` component
-- [ ] **D2** Parameterize sort controls in shared `FilterSectionHeading` / `CollapsibleSectionHeading`
-- [ ] **L2** Fold `scopes.templ` and `contributors.templ` into `sidebar_card.templ`
-- [ ] **U4** Consolidate mobile filter panel and desktop sidebar into a single handler
+- [x] **D4** Replace custom mobile dock with DaisyUI `dock` component
+- [x] **D2** Parameterize sort controls in shared `FilterSectionHeading` / `CollapsibleSectionHeading`
+- [x] **L2** Fold `scopes.templ` and `contributors.templ` into `sidebar_card.templ`
+- [x] **U4** Consolidate mobile filter panel and desktop sidebar into a single handler
 
 ## Priority 3 — Data flow
 

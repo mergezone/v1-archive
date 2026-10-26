@@ -38,7 +38,7 @@ func MobileDock(showFilters bool, filters model.RepositoryFilters) templ.Compone
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div class=\"mobile-dock fixed inset-x-0 bottom-0 z-40 flex h-[calc(4rem+env(safe-area-inset-bottom))] items-center gap-2 border-t border-base-300 bg-base-200 px-4 pt-2 pb-[calc(0.5rem+env(safe-area-inset-bottom))] lg:hidden\" id=\"mobile-dock\"><div class=\"mobile-dock-search flex min-w-0 flex-1 items-center overflow-x-auto whitespace-nowrap\" id=\"mobile-dock-search\"></div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div class=\"dock mobile-dock z-40 items-center gap-2 border-t border-base-300 bg-base-200 px-4 lg:hidden\" id=\"mobile-dock\"><div class=\"mobile-dock-search flex min-w-0 flex-1 items-center overflow-x-auto whitespace-nowrap\" id=\"mobile-dock-search\"></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
