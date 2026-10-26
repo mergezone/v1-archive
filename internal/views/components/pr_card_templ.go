@@ -380,7 +380,7 @@ func PullRequestCard(pullRequest model.StampedPullRequest, filters model.Reposit
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 30, "</b></div><div class=\"pull-request-meta\"><ul class=\"pull-request-meta-list\"><li class=\"pull-request-meta-fixed\">#")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 30, "</b></div><div class=\"pull-request-meta\"><ul class=\"pull-request-meta-list\"><li class=\"pull-request-meta-fixed compact:flex-none\">#")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -393,7 +393,7 @@ func PullRequestCard(pullRequest model.StampedPullRequest, filters model.Reposit
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 31, "</li><li class=\"pull-request-meta-fixed capitalize\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 31, "</li><li class=\"pull-request-meta-fixed capitalize compact:flex-none\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -406,14 +406,14 @@ func PullRequestCard(pullRequest model.StampedPullRequest, filters model.Reposit
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 32, "</li><li class=\"pull-request-meta-opened\" title=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 32, "</li><li class=\"pull-request-meta-opened compact:hidden\" title=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var26 string
 		templ_7745c5c3_Var26, templ_7745c5c3_Err = templ.ResolveAttributeValue("Opened " + model.TimeAgoLong(pullRequest.TimeOpen, pullRequest.DaysOpen))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/views/components/pr_card.templ`, Line: 78, Col: 123}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/views/components/pr_card.templ`, Line: 78, Col: 138}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var26)
 		if templ_7745c5c3_Err != nil {
@@ -427,14 +427,14 @@ func PullRequestCard(pullRequest model.StampedPullRequest, filters model.Reposit
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 34, "</li><li class=\"pull-request-meta-updated\" title=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 34, "</li><li class=\"pull-request-meta-updated hidden compact:list-item compact:flex-none\" title=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var27 string
 		templ_7745c5c3_Var27, templ_7745c5c3_Err = templ.ResolveAttributeValue("Updated " + model.TimeAgoLong(updatedAgo, updatedDays))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/views/components/pr_card.templ`, Line: 81, Col: 106}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/views/components/pr_card.templ`, Line: 81, Col: 149}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var27)
 		if templ_7745c5c3_Err != nil {
