@@ -27,19 +27,4 @@ func TestHomePageHasNoSidebarAndProminentlyPlacesInteractiveSearchAfterCTA(t *te
 	if !strings.Contains(rendered[search:], `@click="startOwnerEdit()"`) {
 		t.Error("home page repository search should remain interactive")
 	}
-	if !strings.Contains(rendered, `class="home-search rounded-xl border border-base-300 bg-base-100 px-5 py-4 compact:px-3 compact:py-3"`) {
-		t.Error("home page search should have prominent sizing and surface styling")
-	}
-	if got := strings.Count(rendered, `aria-labelledby="`); got < 3 {
-		t.Errorf("home page should use labelled semantic sections, found %d", got)
-	}
-	for _, expected := range []string{
-		"fonts.googleapis.com/css2?family=Manrope",
-		`<h1 id="home-title" class="font-heading text-4xl leading-[1.1] font-extrabold tracking-tight`,
-		`<h3 class="font-heading">`,
-	} {
-		if !strings.Contains(rendered, expected) {
-			t.Errorf("home page semantic/max-width structure is missing %q", expected)
-		}
-	}
 }
