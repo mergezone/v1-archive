@@ -1081,6 +1081,7 @@ document.addEventListener("alpine:init", () => {
     },
 
     loadDiscussion() {
+      console.debug("[context-pane] loadDiscussion", { open: this.open, number: this.pullRequestNumber, owner: this._owner, repository: this._repository });
       if (
         !this.open ||
         !this.pullRequestNumber ||
