@@ -4,6 +4,7 @@ import (
 	"io"
 	"log/slog"
 	"net/http"
+	"net/url"
 	"regexp"
 	"slices"
 	"strings"
@@ -108,13 +109,37 @@ func renderSidebar(t *testing.T, query provider.RepositoryQuery) string {
 
 func renderSidebarRequest(t *testing.T, pullRequests []model.StampedPullRequest, query provider.RepositoryQuery, target string) string {
 	t.Helper()
+	routeVars := map[string]string{"owner": query.Owner, "repository": query.Repository}
+	if routeVars["owner"] == "" {
+		routeVars["owner"] = "ghostty-org"
+	}
+	if routeVars["repository"] == "" {
+		routeVars["repository"] = "ghostty"
+	}
+	parsedQuery, parsedOptions := provider.ParseRepositoryQuery(routeVars, mustParseURL(target).Query())
+	// Preserve explicit query fields that the test may set directly.
+	if query.Owner != "" {
+		parsedQuery.Owner = query.Owner
+	}
+	if query.Repository != "" {
+		parsedQuery.Repository = query.Repository
+	}
+	if query.Scope != nil {
+		parsedQuery.Scope = query.Scope
+	}
+	if query.Contributor != nil {
+		parsedQuery.Contributor = query.Contributor
+	}
+	if query.Status != nil {
+		parsedQuery.Status = query.Status
+	}
 	request := &RepositoryRequest{
 		Server: &Server{
 			Provider: &stubProvider{pullRequests: pullRequests},
 			Logger:   slog.New(slog.NewTextHandler(io.Discard, nil)),
 		},
-		Query:       query,
-		ListOptions: provider.PullRequestListOptions{PerPage: 20, Page: 1},
+		Query:       parsedQuery,
+		ListOptions: parsedOptions,
 	}
 	handler := requestTimingMiddleware(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		HandleRepository(request, w, r)
@@ -190,4 +215,12 @@ func TestRepositoryFiltersDoNotTrimTheSidebar(t *testing.T) {
 			}
 		})
 	}
+}
+
+func mustParseURL(raw string) *url.URL {
+	u, err := url.Parse(raw)
+	if err != nil {
+		panic(err)
+	}
+	return u
 }

@@ -159,8 +159,8 @@ func HandleRepository(request *RepositoryRequest, w http.ResponseWriter, r *http
 		Scope:           request.Query.Scope,
 		Contributor:     request.Query.Contributor,
 		Status:          request.Query.Status,
-		ScopeSort:       model.NormalizeSortOrder(r.URL.Query().Get("scope_sort")),
-		ContributorSort: model.NormalizeSortOrder(r.URL.Query().Get("contributor_sort")),
+		ScopeSort:       model.NormalizeSortOrder(request.Query.ScopeSort),
+		ContributorSort: model.NormalizeSortOrder(request.Query.ContributorSort),
 	}
 
 	// Load-more requests return the requested page of pull requests and updated aggregate summaries.

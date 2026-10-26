@@ -361,6 +361,30 @@ document.addEventListener("alpine:init", () => {
           ? savedContextWidth
           : cssLength("--context-pane-width", 384),
       );
+
+      // Restore a shared pull request from the URL, if present.
+      setTimeout(() => {
+        const requested = Number(
+          new URLSearchParams(window.location.search).get("pr"),
+        );
+        if (Number.isFinite(requested) && requested > 0) {
+          Alpine.store("contextPane").openPane(requested);
+        }
+      }, 0);
+
+      window.addEventListener("popstate", () => {
+        const requested = Number(
+          new URLSearchParams(window.location.search).get("pr"),
+        );
+        const store = Alpine.store("contextPane");
+        if (Number.isFinite(requested) && requested > 0) {
+          if (requested !== store.pullRequestNumber || !store.open) {
+            store.openPane(requested);
+          }
+        } else if (store.open) {
+          store.closePane();
+        }
+      });
     },
 
     setTheme(theme) {
@@ -580,8 +604,10 @@ document.addEventListener("alpine:init", () => {
         if (this.open) {
           this._stashDiffs();
           this.open = false;
+          this._syncPrUrl(null);
         } else {
           this._openWithDeferredDiffs();
+          this._syncPrUrl(this.pullRequestNumber);
         }
         return;
       }
@@ -686,6 +712,7 @@ document.addEventListener("alpine:init", () => {
       if (selected) selected.dataset.selected = "false";
       if (card) card.dataset.selected = "true";
 
+      this._syncPrUrl(this.pullRequestNumber);
       setTimeout(enhanceContextPaneImages, 0);
     },
 
@@ -693,6 +720,7 @@ document.addEventListener("alpine:init", () => {
       this._stashDiffs();
       this._cleanup();
       this.open = false;
+      this._syncPrUrl(null);
     },
 
     openPrRef(event) {
@@ -844,6 +872,13 @@ document.addEventListener("alpine:init", () => {
         ];
       }
       return [];
+    },
+
+    _syncPrUrl(number) {
+      const url = new URL(window.location.href);
+      if (number) url.searchParams.set("pr", String(number));
+      else url.searchParams.delete("pr");
+      window.history.replaceState({}, "", url);
     },
 
     _stashDiffs() {
@@ -1174,6 +1209,25 @@ document.addEventListener("alpine:init", () => {
 
     close() {
       this.open = false;
+      this._restoreFiltersToSidebar();
+    },
+
+    _restoreFiltersToSidebar() {
+      const sidebar = document.querySelector(
+        ".repository-sidebar .sidebar-filter-scroll",
+      );
+      if (!sidebar) return;
+
+      const panel = document.querySelector(".filter-panel-body");
+      const scopesSection = document.getElementById("scopes-section");
+      const contribsSection = document.getElementById("contributors-section");
+
+      if (scopesSection && scopesSection.parentElement === panel) {
+        sidebar.appendChild(scopesSection);
+      }
+      if (contribsSection && contribsSection.parentElement === panel) {
+        sidebar.appendChild(contribsSection);
+      }
     },
 
     _moveFiltersToPanel() {

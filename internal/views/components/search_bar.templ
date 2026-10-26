@@ -11,13 +11,13 @@ templ RepositorySearchInput(ownerValue, repositoryValue, ownerPlaceholder, repos
 			ownerLabel = ownerPlaceholder
 		}
 	}}
-	if interactive {
-		<nav class="search-input-row repository-search-row" aria-label="Repository" hx-indicator="#search-loading-indicator">
-			<ul class="repository-search-path">
-				<li class="repository-search-owner">
-					if showIcon {
-						<i class="fa-solid fa-magnifying-glass repository-search-icon" aria-hidden="true"></i>
-					}
+	<nav class="search-input-row repository-search-row" aria-label="Repository" hx-indicator="#search-loading-indicator">
+		<ul class="repository-search-path">
+			<li class="repository-search-owner">
+				if showIcon {
+					<i class="fa-solid fa-magnifying-glass repository-search-icon" aria-hidden="true"></i>
+				}
+				if interactive {
 					<div class="owner-search repository-owner-search">
 						<button class="owner-avatar-trigger repository-owner-avatar btn btn-ghost btn-circle" type="button" x-show="!ownerEditing" @click="startOwnerEdit()" @focus="startOwnerEdit()" aria-label="Edit repository owner">
 							if ownerValue != "" {
@@ -30,31 +30,27 @@ templ RepositorySearchInput(ownerValue, repositoryValue, ownerPlaceholder, repos
 							<input id="repository-owner" x-ref="ownerInput" class="title-input repository-search-input" type="text" data-part="owner" value={ ownerValue } placeholder={ ownerPlaceholder } autocomplete="off"/>
 						</span>
 					</div>
-				</li>
-				<li class="repository-search-repository">
+				} else {
+					<span class="repository-static-label">{ ownerLabel }</span>
+				}
+			</li>
+			<li class="repository-search-repository">
+				if interactive {
 					<div class="repository-search">
 						<button class="repository-label repository-search-label btn btn-ghost" type="button" x-show="!repositoryEditing" @click="startRepositoryEdit()" @focus="startRepositoryEdit()" aria-label="Edit repository">{ repositoryLabel }</button>
 						<span class="repository-search-editor" x-show="repositoryEditing" x-cloak>
 							<input class="title-input repository-search-input" type="text" data-part="repository" x-ref="repositoryInput" value={ repositoryValue } placeholder={ repositoryPlaceholder } autocomplete="off"/>
 						</span>
 					</div>
-				</li>
-			</ul>
+				} else {
+					<span class="repository-static-label">{ repositoryLabel }</span>
+				}
+			</li>
+		</ul>
+		if interactive {
 			<span id="search-loading-indicator" class="htmx-indicator repository-search-loading" role="status" aria-label="Loading">
 				<span class="loading loading-spinner loading-xs"></span>
 			</span>
-		</nav>
-	} else {
-		<nav class="search-input-row repository-search-row" aria-label="Repository">
-			<ul class="repository-search-path">
-				<li class="repository-search-owner">
-					if showIcon {
-						<i class="fa-solid fa-magnifying-glass repository-search-icon" aria-hidden="true"></i>
-					}
-					<span class="repository-static-label">{ ownerLabel }</span>
-				</li>
-				<li class="repository-search-repository"><span class="repository-static-label">{ repositoryLabel }</span></li>
-			</ul>
-		</nav>
-	}
+		}
+	</nav>
 }
