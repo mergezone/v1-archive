@@ -261,7 +261,7 @@ func HandleRepository(request *RepositoryRequest, w http.ResponseWriter, r *http
 	var sharedPullRequest *model.StampedPullRequest
 	if filters.PullRequest > 0 {
 		found := false
-		for _, pullRequest := range allPullRequests {
+		for _, pullRequest := range pullRequests {
 			if pullRequest.Number == filters.PullRequest {
 				found = true
 				break
@@ -269,7 +269,7 @@ func HandleRepository(request *RepositoryRequest, w http.ResponseWriter, r *http
 		}
 		if !found {
 			fetched, err := request.Provider.GetPullRequest(r.Context(), request.Query.Owner, request.Query.Repository, filters.PullRequest)
-			if err == nil {
+			if err == nil && fetched.Number > 0 {
 				sharedPullRequest = &fetched
 			} else {
 				request.Logger.Warn("could not load shared pull request", "error", err)
