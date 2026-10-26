@@ -22,8 +22,8 @@ Remaining audit remediation items from the consistency-first design audit.
 
 ## Priority 4 — CSS rework (major effort, incremental)
 
-- [ ] **D1** Audit `app.css` class-by-class against Tailwind/DaisyUI; convert simple ones
-- [ ] **L1** Further consolidate responsive and density media queries
+- [x] **D1** Audit `app.css` class-by-class against Tailwind/DaisyUI; convert simple ones
+- [x] **L1** Further consolidate responsive and density media queries
 - [x] Group `@media (max-width: 63.999rem)` backdrop rules into a single block
 - [x] Self-host Manrope or document the Google Fonts dependency
 
