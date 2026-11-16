@@ -17,7 +17,9 @@ type RepositoryQuery struct {
 	Scope       []string
 	Contributor []string
 	// TODO Permit only values of Status enum
-	Status []string
+	Status          []string
+	ScopeSort       string
+	ContributorSort string
 }
 
 type PullRequestListOptions struct {
@@ -71,6 +73,8 @@ func ParseRepositoryQuery(routeVariables map[string]string, queryValues url.Valu
 	repositoryQuery.Scope = parseFilterValues(queryValues.Get("scope"))
 	repositoryQuery.Contributor = parseFilterValues(queryValues.Get("contributor"))
 	repositoryQuery.Status = parseFilterValues(queryValues.Get("status"))
+	repositoryQuery.ScopeSort = model.NormalizeSortOrder(queryValues.Get("scope_sort"))
+	repositoryQuery.ContributorSort = model.NormalizeSortOrder(queryValues.Get("contributor_sort"))
 
 	options := PullRequestListOptions{
 		PerPage: 20,
@@ -95,6 +99,7 @@ type Provider interface {
 	// selections, so callers pick the pull requests they want with
 	// FilterPullRequests once the unfiltered set is available.
 	GetPullRequests(ctx context.Context, query RepositoryQuery, options PullRequestListOptions) ([]model.StampedPullRequest, PullRequestPagination, PullRequestTimings, error)
+	GetPullRequest(ctx context.Context, owner, repository string, pullRequestNumber int) (model.StampedPullRequest, error)
 	GetPullRequestDiff(ctx context.Context, owner, repository string, pullRequestNumber int) (string, error)
 	GetPullRequestComments(ctx context.Context, owner, repository string, pullRequestNumber int) ([]model.PullRequestComment, error)
 }

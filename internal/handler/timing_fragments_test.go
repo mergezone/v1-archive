@@ -25,6 +25,10 @@ func (s *stubProvider) GetPullRequests(context.Context, provider.RepositoryQuery
 	return s.pullRequests, provider.PullRequestPagination{}, provider.PullRequestTimings{Gather: 2 * time.Millisecond}, nil
 }
 
+func (s *stubProvider) GetPullRequest(context.Context, string, string, int) (model.StampedPullRequest, error) {
+	return model.StampedPullRequest{}, nil
+}
+
 func (s *stubProvider) GetPullRequestDiff(context.Context, string, string, int) (string, error) {
 	return "", nil
 }
@@ -91,7 +95,7 @@ func TestRepositorySummaryFragmentsEmitTimings(t *testing.T) {
 }
 
 func TestRepositoryDetailFragmentsEmitTimings(t *testing.T) {
-	for _, fragment := range []string{"pr-detail", "pr-discussion"} {
+	for _, fragment := range []string{"pr-discussion"} {
 		t.Run(fragment, func(t *testing.T) {
 			stub := &stubProvider{pullRequests: []model.StampedPullRequest{{PullRequest: model.PullRequest{Number: 1}}}}
 			handler := repositoryTimingHandler(stub, 1)

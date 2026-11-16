@@ -171,13 +171,13 @@ async function attachZoom(selector) {
 }
 
 function discussionErrorHtml() {
-  return '<p class="context-pane-error">Discussion could not be loaded. <a href="#" data-discussion-retry>Try again</a>.</p>';
+  return '<p class="text-sm text-error">Discussion could not be loaded. <a class="link link-hover font-medium" href="#" data-discussion-retry>Try again</a>.</p>';
 }
 
 function discussionSkeletonHtml() {
-  return `<div class="discussion-comment discussion-comment-skeleton" aria-hidden="true">
-    <div class="discussion-skeleton-block skeleton-block"></div>
-    <div class="discussion-skeleton-block skeleton-block"></div>
+  return `<div class="discussion-comment discussion-comment-skeleton border-0 p-0" aria-hidden="true">
+    <div class="skeleton mb-3 h-28 w-full rounded-md"></div>
+    <div class="skeleton mb-3 h-28 w-full rounded-md"></div>
   </div>`;
 }
 
@@ -218,7 +218,7 @@ function enhanceContextPaneImages() {
 }
 
 function getDiffTheme() {
-  return document.documentElement.classList.contains("dark")
+  return document.documentElement.dataset.theme === "dark"
     ? "pierre-dark"
     : "pierre-light";
 }
@@ -269,13 +269,13 @@ function cleanupDiffs(instances) {
   }
 }
 
-// Relocate the repository search row between the top nav and the mobile bottom
-// dock. The nav is re-rendered on every htmx swap, so this runs from the nav
-// component and from a single resize listener registered below. The dock is
-// present on both home and repository pages, so search placement is consistent.
+// Relocate the repository-page search row between the top nav and mobile dock.
+// The home-page search stays in its prominent main-content position. The nav is
+// re-rendered on every htmx swap, so this runs from the nav component and from a
+// single resize listener registered below.
 function syncSearchPlacement() {
-  // Target the interactive nav search specifically: the home page also renders
-  // a non-interactive demo row, which must stay put.
+  // Only target the repository-page nav search; the home page search lives in
+  // the main content and must stay directly below the call-to-action.
   const row = document.querySelector(
     "#nav-search-slot .search-input-row, #mobile-dock-search .search-input-row",
   );
@@ -291,6 +291,24 @@ function syncSearchPlacement() {
   }
 }
 
+// Preserve the open pull request in repository navigations that are triggered
+// after the context pane has been opened client-side.
+document.addEventListener("htmx:configRequest", (event) => {
+  const target = event.detail?.target;
+  if (!target || target.id !== "page-shell") return;
+  const store = window.Alpine?.store?.("contextPane");
+  if (!store?.open || !store.pullRequestNumber) return;
+  try {
+    const url = new URL(event.detail.path, window.location.origin);
+    if (!url.searchParams.has("pr")) {
+      url.searchParams.set("pr", String(store.pullRequestNumber));
+      event.detail.path = url.pathname + url.search;
+    }
+  } catch (error) {
+    // Leave the original request untouched if the path cannot be parsed.
+  }
+});
+
 document.addEventListener("alpine:init", () => {
   window.addEventListener("resize", () => {
     window.clearTimeout(window._searchPlacementTimer);
@@ -300,6 +318,7 @@ document.addEventListener("alpine:init", () => {
   Alpine.store("app", {
     themes: ["light", "dark"],
     theme: "dark",
+    density: "comfortable",
     filterSidebarWidth: 384,
     contextPaneWidth: 384,
     filterSidebarMinWidth: 256,
@@ -323,8 +342,12 @@ document.addEventListener("alpine:init", () => {
           ? "dark"
           : "light";
       }
-      document.documentElement.className = this.theme;
+      document.documentElement.dataset.theme = this.theme;
       localStorage.setItem("theme", this.theme);
+
+      const savedDensity = localStorage.getItem("list-density");
+      this.density = savedDensity === "compact" ? "compact" : "comfortable";
+      document.documentElement.dataset.density = this.density;
 
       const rootStyle = getComputedStyle(document.documentElement);
       const remSize = parseFloat(rootStyle.fontSize) || 16;
@@ -356,18 +379,47 @@ document.addEventListener("alpine:init", () => {
           ? savedContextWidth
           : cssLength("--context-pane-width", 384),
       );
+
+      // Restore a shared pull request from the URL, if present.
+      setTimeout(() => {
+        const requested = Number(
+          new URLSearchParams(window.location.search).get("pr"),
+        );
+        if (Number.isFinite(requested) && requested > 0) {
+          Alpine.store("contextPane").openPane(requested);
+        }
+      }, 0);
+
+      window.addEventListener("popstate", () => {
+        const requested = Number(
+          new URLSearchParams(window.location.search).get("pr"),
+        );
+        const store = Alpine.store("contextPane");
+        if (Number.isFinite(requested) && requested > 0) {
+          if (requested !== store.pullRequestNumber || !store.open) {
+            store.openPane(requested);
+          }
+        } else if (store.open) {
+          store.closePane();
+        }
+      });
     },
 
-    cycleTheme() {
-      const wasDark = this.theme === "dark";
-      this.theme = wasDark ? "light" : "dark";
-      const isDark = this.theme === "dark";
-      document.documentElement.className = this.theme;
-      localStorage.setItem("theme", this.theme);
+    setTheme(theme) {
+      const next = theme === "dark" ? "dark" : "light";
+      if (next === this.theme) return;
+      this.theme = next;
+      document.documentElement.dataset.theme = next;
+      localStorage.setItem("theme", next);
+      Alpine.store("contextPane").rerenderDiffs();
+    },
 
-      if (wasDark !== isDark) {
-        Alpine.store("contextPane").rerenderDiffs();
-      }
+    setDensity(density) {
+      const next = density === "compact" ? "compact" : "comfortable";
+      if (next === this.density) return;
+      this.density = next;
+      document.documentElement.dataset.density = next;
+      localStorage.setItem("list-density", next);
     },
 
     setPaneWidth(kind, requestedWidth, persist = false) {
@@ -510,11 +562,12 @@ document.addEventListener("alpine:init", () => {
     pullRequestExpiryReason: "",
     pullRequestSupersededBy: null,
     pullRequestComments: "0",
+    pullRequestReviewerCount: 0,
     pullRequestAge: "",
     pullRequestAuthorName: "",
     pullRequestAuthorURL: "",
-    pullRequestScope: "",
-    pullRequestScopeURL: "",
+    pullRequestAuthorAvatarURL: "",
+    pullRequestScopes: [],
     bodyHtml: "",
     diffInstances: [],
     loadingDiffs: false,
@@ -527,13 +580,52 @@ document.addEventListener("alpine:init", () => {
     _discussionByPullRequest: new Map(),
     _seedByPullRequest: new Map(),
 
+    get pullRequestStateIconClass() {
+      switch (this.pullRequestState) {
+        case "Merged":
+          return "fa-code-merge";
+        case "Closed":
+          return "fa-ban";
+        case "Draft":
+          return "fa-pen";
+        default:
+          return "fa-code-pull-request";
+      }
+    },
+
+    get pullRequestStateBadgeClass() {
+      switch (this.pullRequestState) {
+        case "Draft":
+          return "badge-warning";
+        case "Merged":
+          return "badge-accent";
+        default:
+          return "badge-ghost";
+      }
+    },
+
+    get pullRequestFreshnessBadgeClass() {
+      switch (this.pullRequestExpiryStatus) {
+        case "Fresh":
+          return "badge-success";
+        case "Stale":
+          return "badge-warning";
+        case "Expired":
+          return "badge-error";
+        default:
+          return "badge-ghost";
+      }
+    },
+
     async openPane(pullRequestNumber, dataset = {}) {
       if (pullRequestNumber === this.pullRequestNumber) {
         if (this.open) {
           this._stashDiffs();
           this.open = false;
+          this._syncPrUrl(null);
         } else {
           this._openWithDeferredDiffs();
+          this._syncPrUrl(this.pullRequestNumber);
         }
         return;
       }
@@ -552,58 +644,68 @@ document.addEventListener("alpine:init", () => {
       this._cleanup();
       this._resetDiscussion();
 
-      let seed = {};
-      try {
-        const card = document.querySelector(
-          `.pull-request[data-pull-request-number="${pullRequestNumber}"]`,
-        );
-        const seedNode = card?.querySelector(
-          '.pull-request-seed script[type="application/json"]',
-        );
-        seed = JSON.parse(
-          seedNode?.textContent || dataset.pullRequestSeed || "{}",
-        );
-        if (Object.keys(seed).length)
-          this._seedByPullRequest.set(pullRequestNumber, seed);
-      } catch (error) {
-        console.warn("[context-pane] invalid pull request seed", error);
+      let seed = this._seedByPullRequest.get(pullRequestNumber) || {};
+      if (!seed.titleHtml && !seed.bodyHtml) {
+        try {
+          const card = document.querySelector(
+            `.pull-request-card[data-pull-request-number="${pullRequestNumber}"]`,
+          );
+          seed = {
+            titleHtml:
+              card?.querySelector(".pull-request-title-html")?.innerHTML || "",
+            bodyHtml:
+              card?.querySelector(".pull-request-body-html")?.innerHTML || "",
+          };
+          if (seed.titleHtml || seed.bodyHtml) {
+            this._seedByPullRequest.set(pullRequestNumber, seed);
+          }
+        } catch (error) {
+          console.warn("[context-pane] invalid pull request seed", error);
+          seed = {};
+        }
       }
 
-      this.pullRequestNumber = seed.number || pullRequestNumber;
+      this.pullRequestNumber =
+        Number(dataset.pullRequestNumber) || pullRequestNumber;
       this.pullRequestTitle =
-        seed.title || dataset.pullRequestTitle || "Pull Request";
-      this.pullRequestTitleHtml = seed.titleHtml || this.pullRequestTitle;
+        dataset.pullRequestTitle || seed.title || "Pull Request";
+      this.pullRequestTitleHtml =
+        seed.titleHtml || dataset.pullRequestTitle || this.pullRequestTitle;
       this.pullRequestStatusClass =
-        seed.statusClass || dataset.pullRequestStatusClass || "";
-      this.pullRequestURL = seed.url || dataset.pullRequestURL || "#";
-      this.pullRequestState = seed.state || dataset.pullRequestState || "";
+        dataset.pullRequestStatusClass || seed.statusClass || "";
+      this.pullRequestURL = dataset.pullRequestURL || seed.url || "#";
+      this.pullRequestState = dataset.pullRequestState || seed.state || "";
       this.pullRequestExpiryStatus =
-        seed.expiryStatus || dataset.pullRequestExpiryStatus || "";
+        dataset.pullRequestExpiryStatus || seed.expiryStatus || "";
       this.pullRequestExpiryIconClass =
-        seed.expiryIconClass || dataset.pullRequestExpiryIconClass || "";
+        dataset.pullRequestExpiryIconClass || seed.expiryIconClass || "";
       this.pullRequestExpiryReason =
-        seed.expiryReason || dataset.pullRequestExpiryReason || "";
+        dataset.pullRequestExpiryReason || seed.expiryReason || "";
       this.pullRequestSupersededBy = this._supersession(
         seed.supersededBy,
         dataset,
       );
       this.pullRequestComments = String(
-        seed.comments ?? dataset.pullRequestComments ?? "0",
+        dataset.pullRequestComments ?? seed.comments ?? "0",
       );
-      this.pullRequestAge = seed.age || dataset.pullRequestAge || "";
+      this.pullRequestReviewerCount = Number(
+        dataset.pullRequestReviewerCount ?? seed.reviewerCount ?? 0,
+      );
+      this.pullRequestAge =
+        dataset.pullRequestAge || seed.age || "";
       this.pullRequestAuthorName =
-        seed.authorName || dataset.pullRequestAuthorName || "";
+        dataset.pullRequestAuthorName || seed.authorName || "";
       this.pullRequestAuthorURL =
-        seed.authorURL || dataset.pullRequestAuthorURL || "#";
-      this.pullRequestScope = seed.scope || dataset.pullRequestScope || "";
-      this.pullRequestScopeURL =
-        seed.scopeURL || dataset.pullRequestScopeURL || "#";
+        dataset.pullRequestAuthorURL || seed.authorURL || "#";
+      this.pullRequestAuthorAvatarURL =
+        dataset.pullRequestAuthorAvatarUrl || seed.authorAvatarURL || "";
+      this.pullRequestScopes = this._scopes(seed.scopes, dataset);
       this._seedByPullRequest.set(pullRequestNumber, seed);
 
       this._owner = "";
       this._repository = "";
       const card = document.querySelector(
-        `.pull-request[data-pull-request-number="${pullRequestNumber}"]`,
+        `.pull-request-card[data-pull-request-number="${pullRequestNumber}"]`,
       );
       const owner = card?.closest("[data-owner]")?.dataset.owner;
       const repository = card?.closest("[data-repository]")?.dataset.repository;
@@ -618,8 +720,8 @@ document.addEventListener("alpine:init", () => {
         this._owner = owner;
         this._repository = repository;
       }
-      this._owner = seed.owner || this._owner;
-      this._repository = seed.repository || this._repository;
+      this._owner = this._owner || "";
+      this._repository = this._repository || "";
 
       this.bodyHtml = seed.bodyHtml || "";
       this.loadingBody = false;
@@ -629,10 +731,13 @@ document.addEventListener("alpine:init", () => {
 
       this.open = true;
 
-      const selected = document.querySelector(".pull-request.selected");
-      if (selected) selected.classList.remove("selected");
-      card?.classList.add("selected");
+      const selected = document.querySelector(
+        '.pull-request-card[data-selected="true"]',
+      );
+      if (selected) selected.dataset.selected = "false";
+      if (card) card.dataset.selected = "true";
 
+      this._syncPrUrl(this.pullRequestNumber);
       setTimeout(enhanceContextPaneImages, 0);
     },
 
@@ -640,6 +745,7 @@ document.addEventListener("alpine:init", () => {
       this._stashDiffs();
       this._cleanup();
       this.open = false;
+      this._syncPrUrl(null);
     },
 
     openPrRef(event) {
@@ -663,7 +769,7 @@ document.addEventListener("alpine:init", () => {
       if (isNaN(pullRequestNumber)) return;
 
       const card = document.querySelector(
-        `.pull-request[data-pull-request-number="${pullRequestNumber}"]`,
+        `.pull-request-card[data-pull-request-number="${pullRequestNumber}"]`,
       );
       if (card) {
         this.openPane(pullRequestNumber, card.dataset);
@@ -672,9 +778,7 @@ document.addEventListener("alpine:init", () => {
 
       const seeded = this._seedByPullRequest.get(pullRequestNumber);
       if (seeded) {
-        this.openPane(pullRequestNumber, {
-          pullRequestSeed: JSON.stringify(seeded),
-        });
+        this.openPane(pullRequestNumber);
         return;
       }
 
@@ -706,11 +810,13 @@ document.addEventListener("alpine:init", () => {
       this.pullRequestExpiryIconClass = "";
       this.pullRequestExpiryReason = "";
       this.pullRequestSupersededBy = null;
+      this.pullRequestComments = "0";
+      this.pullRequestReviewerCount = 0;
       this.pullRequestAge = "";
       this.pullRequestAuthorName = "";
       this.pullRequestAuthorURL = "#";
-      this.pullRequestScope = "";
-      this.pullRequestScopeURL = "#";
+      this.pullRequestAuthorAvatarURL = "";
+      this.pullRequestScopes = [];
       this._owner = owner;
       this._repository = repository;
       const seed = this._seedByPullRequest.get(pullRequestNumber);
@@ -725,11 +831,12 @@ document.addEventListener("alpine:init", () => {
         this.pullRequestExpiryReason = seed.expiryReason || "";
         this.pullRequestSupersededBy = this._supersession(seed.supersededBy);
         this.pullRequestComments = String(seed.comments ?? 0);
+        this.pullRequestReviewerCount = Number(seed.reviewerCount ?? 0);
         this.pullRequestAge = seed.age || "";
         this.pullRequestAuthorName = seed.authorName || "";
         this.pullRequestAuthorURL = seed.authorURL || "#";
-        this.pullRequestScope = seed.scope || "";
-        this.pullRequestScopeURL = seed.scopeURL || "#";
+        this.pullRequestAuthorAvatarURL = seed.authorAvatarURL || "";
+        this.pullRequestScopes = this._scopes(seed.scopes);
         this.bodyHtml = seed.bodyHtml || "";
         this.loadingBody = false;
         this._seedDiscussion(pullRequestNumber);
@@ -758,6 +865,35 @@ document.addEventListener("alpine:init", () => {
           dataset.pullRequestSupersededByReason ||
           "is newer",
       };
+    },
+
+    _scopes(seedScopes, dataset = {}) {
+      // The plural data-* payload is canonical; the JSON seed is only a fallback.
+      let scopes = [];
+      try {
+        scopes = JSON.parse(dataset.pullRequestScopes || "[]");
+      } catch {
+        scopes = [];
+      }
+      if (!Array.isArray(scopes) || scopes.length === 0) {
+        scopes = seedScopes;
+      }
+      if (Array.isArray(scopes) && scopes.length) {
+        return scopes
+          .filter((scope) => scope && scope.name)
+          .map((scope) => ({
+            name: String(scope.name),
+            url: scope.url || "#",
+          }));
+      }
+      return [];
+    },
+
+    _syncPrUrl(number) {
+      const url = new URL(window.location.href);
+      if (number) url.searchParams.set("pr", String(number));
+      else url.searchParams.delete("pr");
+      window.history.replaceState({}, "", url);
     },
 
     _stashDiffs() {
@@ -814,8 +950,10 @@ document.addEventListener("alpine:init", () => {
           .forEach((el) => el.remove());
       }
 
-      const selected = document.querySelector(".pull-request.selected");
-      if (selected) selected.classList.remove("selected");
+      const selected = document.querySelector(
+        '.pull-request-card[data-selected="true"]',
+      );
+      if (selected) selected.dataset.selected = "false";
     },
 
     async rerenderDiffs() {
@@ -943,6 +1081,7 @@ document.addEventListener("alpine:init", () => {
     },
 
     loadDiscussion() {
+      console.debug("[context-pane] loadDiscussion", { open: this.open, number: this.pullRequestNumber, owner: this._owner, repository: this._repository });
       if (
         !this.open ||
         !this.pullRequestNumber ||
@@ -1057,18 +1196,13 @@ document.addEventListener("alpine:init", () => {
     _showDiffSkeleton(container) {
       if (!container) return;
       const skeleton = document.createElement("div");
-      skeleton.className = "diff-skeleton skeleton";
-      skeleton.style.cssText =
-        "display: flex; flex-direction: column; gap: 0.75rem;";
+      skeleton.className = "diff-skeleton flex flex-col gap-3";
 
       const heights = [100, 140, 80, 120, 160];
       for (const h of heights) {
         const block = document.createElement("div");
-        block.className = "skeleton-line is-skeleton";
-        block.style.cssText = `
-          width: 100%;
-          height: ${h}px;
-        `;
+        block.className = "skeleton w-full rounded-md";
+        block.style.height = `${h}px`;
         skeleton.appendChild(block);
       }
       container.appendChild(skeleton);
@@ -1085,28 +1219,29 @@ document.addEventListener("alpine:init", () => {
     },
 
     openPanel() {
-      this._moveFiltersToPanel();
+      this._syncFilters(true);
       this.open = true;
-      document.body.classList.add("filter-pane-open");
     },
 
     close() {
       this.open = false;
-      document.body.classList.remove("filter-pane-open");
+      this._syncFilters(false);
     },
 
-    _moveFiltersToPanel() {
+    // Single handler for moving the shared filter sections between the desktop
+    // sidebar and the mobile panel, keeping both views backed by the same DOM.
+    _syncFilters(toPanel) {
+      const sidebar = document.querySelector(".sidebar-filter-scroll");
       const panel = document.querySelector(".filter-panel-body");
-      if (!panel) return;
-
       const scopesSection = document.getElementById("scopes-section");
       const contribsSection = document.getElementById("contributors-section");
 
-      if (scopesSection && scopesSection.parentElement !== panel) {
-        panel.appendChild(scopesSection);
-      }
-      if (contribsSection && contribsSection.parentElement !== panel) {
-        panel.appendChild(contribsSection);
+      for (const section of [scopesSection, contribsSection]) {
+        if (!section) continue;
+        const target = toPanel ? panel : sidebar;
+        if (target && section.parentElement !== target) {
+          target.appendChild(section);
+        }
       }
     },
   });

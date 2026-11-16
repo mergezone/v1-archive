@@ -24,6 +24,10 @@ func (p *pagedStubProvider) GetPullRequests(_ context.Context, _ provider.Reposi
 	return p.pages[options.Page], provider.PullRequestPagination{HasNext: options.Page < 2}, provider.PullRequestTimings{Gather: time.Millisecond}, nil
 }
 
+func (p *pagedStubProvider) GetPullRequest(context.Context, string, string, int) (model.StampedPullRequest, error) {
+	return model.StampedPullRequest{}, nil
+}
+
 func (p *pagedStubProvider) GetPullRequestDiff(context.Context, string, string, int) (string, error) {
 	return "", nil
 }
@@ -72,7 +76,7 @@ func TestRepositorySortFragmentRebuildsEveryLoadedPage(t *testing.T) {
 			t.Errorf("response is missing scope %q from a loaded page: %q", scope, body)
 		}
 	}
-	for _, unexpected := range []string{`id="overview-stats"`, `id="load-more-card"`, `id="scroll-content"`, `class="item pull-request box"`} {
+	for _, unexpected := range []string{`id="overview-stats"`, `id="load-more-card"`, `id="scroll-content"`, `data-pull-request-number`} {
 		if strings.Contains(body, unexpected) {
 			t.Errorf("sort response touched the main content area: found %q in %q", unexpected, body)
 		}

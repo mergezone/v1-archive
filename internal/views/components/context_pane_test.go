@@ -16,8 +16,9 @@ func TestContextPaneClosesWhenTappingOutsideOnMobile(t *testing.T) {
 	rendered := output.String()
 	for _, expected := range []string{
 		"@click.away=",
-		"max-width: 1024px",
+		"window.innerWidth < 1024",
 		"$store.contextPane.closePane()",
+		"closest('.pull-request-card')",
 		"closest('.filter-panel')",
 		"closest('.mobile-dock')",
 	} {

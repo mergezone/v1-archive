@@ -131,7 +131,6 @@ func sidebarSummaries(allPullRequests []model.StampedPullRequest, scopeSortOrder
 type RepositoryFragment string
 
 const (
-	PullRequestDetailFragment     RepositoryFragment = "pr-detail"
 	PullRequestDiscussionFragment RepositoryFragment = "pr-discussion"
 	ContributorsFragment          RepositoryFragment = "contributors"
 	ScopesFragment                RepositoryFragment = "scopes"
@@ -153,14 +152,16 @@ func HandleRepository(request *RepositoryRequest, w http.ResponseWriter, r *http
 	// Response contract: `fragment` selects a named repository fragment and takes
 	// precedence; otherwise HX-Request=true returns the repository main view, while
 	// direct navigation returns the complete HTML document.
+	pullRequestNumber, _ := strconv.Atoi(r.URL.Query().Get("pr"))
 	filters := model.RepositoryFilters{
 		Owner:           request.Query.Owner,
 		Repository:      request.Query.Repository,
 		Scope:           request.Query.Scope,
 		Contributor:     request.Query.Contributor,
 		Status:          request.Query.Status,
-		ScopeSort:       model.NormalizeSortOrder(r.URL.Query().Get("scope_sort")),
-		ContributorSort: model.NormalizeSortOrder(r.URL.Query().Get("contributor_sort")),
+		ScopeSort:       model.NormalizeSortOrder(request.Query.ScopeSort),
+		ContributorSort: model.NormalizeSortOrder(request.Query.ContributorSort),
+		PullRequest:     pullRequestNumber,
 	}
 
 	// Load-more requests return the requested page of pull requests and updated aggregate summaries.
@@ -257,6 +258,25 @@ func HandleRepository(request *RepositoryRequest, w http.ResponseWriter, r *http
 
 	scopeSummaries, contributorSummaries := sidebarSummaries(allPullRequests, filters.ScopeSort, filters.ContributorSort)
 
+	var sharedPullRequest *model.StampedPullRequest
+	if filters.PullRequest > 0 {
+		found := false
+		for _, pullRequest := range pullRequests {
+			if pullRequest.Number == filters.PullRequest {
+				found = true
+				break
+			}
+		}
+		if !found {
+			fetched, err := request.Provider.GetPullRequest(r.Context(), request.Query.Owner, request.Query.Repository, filters.PullRequest)
+			if err == nil && fetched.Number > 0 {
+				sharedPullRequest = &fetched
+			} else {
+				request.Logger.Warn("could not load shared pull request", "error", err)
+			}
+		}
+	}
+
 	viewData := model.RepositoryViewData{
 		BaseURL:           request.BaseURL,
 		Owner:             request.Query.Owner,
@@ -270,8 +290,10 @@ func HandleRepository(request *RepositoryRequest, w http.ResponseWriter, r *http
 		ScopeSort:         filters.ScopeSort,
 		ContributorCounts: contributorSummaries,
 		ContributorSort:   filters.ContributorSort,
-		CurrentPage:       1,
-		HasMore:           pagination.HasNext,
+		CurrentPage:         1,
+		HasMore:             pagination.HasNext,
+		PullRequest:         filters.PullRequest,
+		SharedPullRequest:   sharedPullRequest,
 	}
 	logicSpan.SetAttributes(attribute.Int("repository.scope_count", len(viewData.ScopeCounts)))
 	logicSpan.End()
@@ -294,24 +316,6 @@ func HandleRepository(request *RepositoryRequest, w http.ResponseWriter, r *http
 				}
 				markRequestWorkComplete(r)
 				err = components.PullRequestDiscussion(comments).Render(r.Context(), w)
-				if err != nil {
-					request.Logger.Error(err.Error())
-				}
-				return
-			}
-		}
-		http.Error(w, "Pull request not found", http.StatusNotFound)
-		return
-	case PullRequestDetailFragment:
-		pullRequestNumber, err := strconv.Atoi(r.URL.Query().Get("number"))
-		if err != nil {
-			http.Error(w, "Invalid pull request number", http.StatusBadRequest)
-			return
-		}
-		for _, pullRequest := range viewData.PullRequests {
-			if pullRequest.Number == pullRequestNumber {
-				markRequestWorkComplete(r)
-				err = components.PullRequestDetail(pullRequest).Render(r.Context(), w)
 				if err != nil {
 					request.Logger.Error(err.Error())
 				}

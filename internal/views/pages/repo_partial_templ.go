@@ -34,12 +34,12 @@ func RepositoryMainView(viewData model.RepositoryViewData, commit string) templ.
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		filters := model.RepositoryFilters{Owner: viewData.Owner, Repository: viewData.Repository, Scope: viewData.Scope, Contributor: viewData.Contributor, Status: viewData.Status, ScopeSort: viewData.ScopeSort, ContributorSort: viewData.ContributorSort}
+		filters := model.RepositoryFilters{Owner: viewData.Owner, Repository: viewData.Repository, Scope: viewData.Scope, Contributor: viewData.Contributor, Status: viewData.Status, ScopeSort: viewData.ScopeSort, ContributorSort: viewData.ContributorSort, PullRequest: viewData.PullRequest}
 		templ_7745c5c3_Err = components.RepositorySidebar(filters, viewData.ScopeCounts, viewData.ScopeSort, viewData.ContributorCounts, viewData.ContributorSort, viewData.CurrentPage).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<main class=\"scroll\"><div class=\"overview\" id=\"overview-stats\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<main class=\"scroll flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto bg-base-100 p-4 scrollbar-slim compact:gap-1 compact:p-2\"><div class=\"flex flex-col gap-4 compact:gap-2\" id=\"overview-stats\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -74,6 +74,20 @@ func RepositoryMainView(viewData model.RepositoryViewData, commit string) templ.
 		templ_7745c5c3_Err = components.MobileDock(true, filters).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
+		}
+		if viewData.SharedPullRequest != nil {
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "<div hidden id=\"shared-pull-request\" aria-hidden=\"true\">")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = components.PullRequestCard(*viewData.SharedPullRequest, filters).Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "</div>")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
 		}
 		return nil
 	})

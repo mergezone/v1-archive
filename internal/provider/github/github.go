@@ -124,6 +124,65 @@ func (g GitHub) GetPullRequests(ctx context.Context, query provider.RepositoryQu
 	return stampedPullRequests, hasNext, pullRequestTimings(operationStarted, gatherWaits), nil
 }
 
+func (g GitHub) GetPullRequest(ctx context.Context, owner, repository string, pullRequestNumber int) (model.StampedPullRequest, error) {
+	ctx, span := telemetry.Tracer("merge/github").Start(ctx, "github.pull_request",
+		trace.WithAttributes(
+			attribute.String("github.owner", owner),
+			attribute.String("github.repository", repository),
+			attribute.Int("github.pull_request_number", pullRequestNumber),
+		),
+	)
+	defer span.End()
+
+	requestURL := fmt.Sprintf("https://api.github.com/repos/%s/%s/pulls/%d", owner, repository, pullRequestNumber)
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, requestURL, nil)
+	if err != nil {
+		telemetry.RecordError(span, err)
+		return model.StampedPullRequest{}, err
+	}
+	g.configureAPIRequest(req)
+
+	resp, err := githubHTTPClient.Do(req)
+	if err != nil {
+		telemetry.RecordError(span, err)
+		return model.StampedPullRequest{}, err
+	}
+	defer resp.Body.Close()
+	span.SetAttributes(attribute.Int("http.response.status_code", resp.StatusCode))
+
+	if resp.StatusCode != http.StatusOK {
+		provider.LogRateLimitExceeded(g.Logger, resp)
+		err := fmt.Errorf("request failed with status: %s", resp.Status)
+		telemetry.RecordError(span, err)
+		return model.StampedPullRequest{}, err
+	}
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		telemetry.RecordError(span, err)
+		return model.StampedPullRequest{}, err
+	}
+
+	var pullRequest model.PullRequest
+	if err := json.Unmarshal(body, &pullRequest); err != nil {
+		telemetry.RecordError(span, err)
+		return model.StampedPullRequest{}, err
+	}
+
+	pullRequests := []model.PullRequest{pullRequest}
+	gatherWaits := &gatherWaitTracker{}
+	if err := g.populatePullRequestCommentCounts(ctx, owner, repository, pullRequests, gatherWaits); err != nil {
+		telemetry.RecordError(span, err)
+		return model.StampedPullRequest{}, err
+	}
+
+	stamped := model.StampNow(pullRequests)
+	if len(stamped) == 0 {
+		return model.StampedPullRequest{}, fmt.Errorf("pull request not found")
+	}
+	return stamped[0], nil
+}
+
 func (g GitHub) GetPullRequestDiff(ctx context.Context, owner, repository string, pullRequestNumber int) (string, error) {
 	ctx, span := telemetry.Tracer("merge/github").Start(ctx, "github.pull_request_diff",
 		trace.WithAttributes(
